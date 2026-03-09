@@ -1,0 +1,57 @@
+PARTE 1: Repaso de lenguaje C
+
+a) Investigue sobre los distintos tipos de datos en C y en particular indique cuantos bits contiene cada tipo de dato y que rango de valores pueden representar cada tipo.
+RTA:
+  TIPO / BITS/ RANGO DE REPRESENTACIÓN / BYTES
+- signed char 8bits -128 a+127                             1
+- unsigned char 8bits 0 a 255                              1
+- short int 16bits -32768 a 32767                          2
+- unsigned short 16bits 0 a 65535                          2
+- int 16bits -32768 a 32767                                2
+- long 32bits - 2147483648 a 2147483647                    4
+- unsigned long 32bits 0 a 4294967295                      4
+- float (IEEE32) 32bits 1.17549x10-38 a 3.40282x10+38      4
+- double (IEEE64) 64bits 2.22507x10-308 a 1.79769x10+308   8
+IMPORTANTE: Todos estos valores son un estándar mínimo que garantiza C que tienen estos tipos
+de datos. El tamaño de cada tipo de dato lo define realmente del compilador, el cual generalmente
+lo hace según la arquitectura objetivo. Por eso se suele decir también que el tamaño de los datos
+depende de la PC.
+
+
+b) Investigue sobre los modificadores: static, volatile, register, const. Busque un ejemplo de cada caso.
+RTA: 
+- static: Una variable local declarada como static tiene una dirección fija de memoria RAM que se conserva
+	  durante toda la ejecución del programa. Su valor se mantiene entre las llamadas a la función.
+	  Una variable local declarada como static se convierte en una variable 'privada' y su alcance
+	  se limita solo al archivo .c donde está definida
+	  Una función declarada como static se convierte en una función 'privada' ".
+
+- volatile: Indica al compilador que la variable puede ser modificada por acciones externas al programa
+	    y que NO debe aplicar optimizaciones sobre la misma.
+	    Ej1: Variables que representan registros de la MCU deben ser declaradas como volátiles.
+	    Ej2: Variables que puedan ser modificadas por rutinas de interrupción deben ser volátiles.
+	    
+- const: Indica al compilador que la variable es únicamente de lectura y por lo tanto no puede 
+  	 modificarse.
+  	 
+- extern: Indica que la variable está definida en otro archivo. Son sí o sí globales y el linker 
+	  (etapa post compilador) se encarga de justamente linkear esas referencias a una variable
+	  externa con la variable de mismo nombre de otro archivo (todas siendo globales).
+	  
+- register: Sugiera al compilador que la variable local sea colocada en algún registro del CPU para
+	    un mejor tiempo de acceso.
+
+
+c) Repase el uso de las sentencias del pre-procesador de C, entre ellas: #include, #define, #ifdef y typedef.
+
+
+d) ¿Qué es una constante de carácter? ¿qué es una cadena de caracteres?
+e) ¿Cuál es la diferencia entre una variable local y una global? ¿Por qué utilizaría una u otra?
+f) Describa todos los operadores lógicos de C ¿cúal es la diferencia entre los operadores && y &? ¿entre || y |?
+¿y entre ! y ~? ¿Qué es una máscara de bits?
+g) ¿Qué es un prototipo de función en C? ¿Cuáles son las alternativas para pasar argumentos a una función?
+¿Cómo se retorna un valor desde una función?
+h) Repase el concepto de punteros y arreglos. Explique con ejemplos la relación entre ambos.
+i) Investigue sobre los tipos de variables struct y union (estructuras y uniones) en C. Busque un ejemplo de cada
+caso.
+j) ¿Qué son los campos de bit de una estructura y cuál es la utilidad directa a bajo nivel?
