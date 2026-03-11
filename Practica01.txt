@@ -40,9 +40,15 @@ RTA:
 	  
 - register: Sugiera al compilador que la variable local sea colocada en algún registro del CPU para
 	    un mejor tiempo de acceso.
+	    
+- const: Indica al compilador que la variable es read only. 
 
 
 c) Repase el uso de las sentencias del pre-procesador de C, entre ellas: #include, #define, #ifdef y typedef.
+RTA:
+- #define identificador token-string:  El prepcrocesador sustituye al identificador por el token-string
+  a lo largo del código antes de que siquiera lo vea el compilador. Un define sin token quita las 
+  repeticiones del identificador a lo largo del código. 
 
 
 d) ¿Qué es una constante de carácter? ¿qué es una cadena de caracteres?
