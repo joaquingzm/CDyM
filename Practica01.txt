@@ -46,13 +46,52 @@ RTA:
 
 c) Repase el uso de las sentencias del pre-procesador de C, entre ellas: #include, #define, #ifdef y typedef.
 RTA:
-- #define identificador token-string:  El prepcrocesador sustituye al identificador por el token-string
+- #define NAME replacement:  El prepcrocesador sustituye al identificador por el token-string
   a lo largo del código antes de que siquiera lo vea el compilador. Un define sin token quita las 
-  repeticiones del identificador a lo largo del código. 
+  repeticiones del identificador a lo largo del código. Se le dice también que define macros, de las 
+  cuales hay varios tipos:
+  	* Object-like macro
+  	#define PI 3.14
+  	
+  	* Function-like macro
+  	#define SQR(x) ((x)*(x))
+  	#define MAX(a,b) ((a)>(b) ? (a) : (b))
+  	
+- #undef NAME: Elimina la definición de NAME.
+
+- #include "file": El preprocesador sustituye la directiva por el contenido del fichero referenciado.
+  Cada include produce inclusión textual. Rutas y orden de búsqueda dependen del compilador y sus flags.
+
+- #if, #ifdef, #ifndef, #elif, #else, #endif EXPRESSION: EXPRESSION debe ser algo evaluable en tiempo
+  de preprocesado.
+  	* Ej
+  	#if defined(__GNUC__) && __GNUC__ >= 5
+  	  // codigo
+  	#endif
+  	
+Cositas: Existen macros predefinidas:
+	*__FILE__: Cadena literal con el nombre del fichero actual
+	*__LINE__: Número de línea actual (entero)
+	*__DATE__,__TIME__: Fecha y hora de compilación (literales, sea lo que sea)
+	
+  Cuando el procesador encuentra un identificador/name que es un macro, la sustitye por su replacement.
+  El texto resultante puede ser rescanneado para detectar e expandir otros macros. Un macro no se 
+  expande recursivamente si el macro aparece en su propio replacement (protección contra recursión inf)
 
 
 d) ¿Qué es una constante de carácter? ¿qué es una cadena de caracteres?
+RTA:
+- char: Tipo de dato que ocupa un byte
+	*Ej
+	char c='A';
+- cadena de char: Un array de char terminado en '\0'
+	*Ej
+	char s[] = "hola"; (se agrega '\0' solo)
+
+
 e) ¿Cuál es la diferencia entre una variable local y una global? ¿Por qué utilizaría una u otra?
+
+
 f) Describa todos los operadores lógicos de C ¿cúal es la diferencia entre los operadores && y &? ¿entre || y |?
 ¿y entre ! y ~? ¿Qué es una máscara de bits?
 g) ¿Qué es un prototipo de función en C? ¿Cuáles son las alternativas para pasar argumentos a una función?
