@@ -1,0 +1,189 @@
+f) Describa todos los operadores lógicos de C ¿cúal es la diferencia entre los operadores && y &? ¿entre || y |?
+PARTE 2: Microcontroladores AVR
+
+a) Investigue sobre los diferentes modelos de las plataformas open source Arduino UNO y Arduino MEGA. En
+particular detalle las características de los microcontroladores que se utilizan (Atmega328P y Atmega2560).
+Tabule los periféricos, la cantidad de RAM y de FLASH que poseen las distintas versiones.
+RTA:
+- Arduino UNO: 
+	*Microcontrolador: Atmega328P
+		*Flash: 32KB
+		*SRAM: 2KB
+		*EEPROM: 1KB
+	*Arquitectura: AVR 8bits
+	*Frecuencia de clock: 16MHz
+	*Voltaje de operación: 5V
+	*Periféricos principales:
+		*14 pines digitales I/O (6 con PWM = Pulse Width Modulation -> Convierten digital a analógico)
+		*6 entradas analógicas (ADC)
+		*1 UART (serial)
+		*SPI
+		*I2C (TWI)
+		*Timers:
+			*2 timers de 8bits
+			*1 timer de 16bits
+
+- Arduino MEGA2560:
+	*Microcontrolador: ATmega2560
+		*Flash: 256KB
+		*SRAM: 8KB
+		*EEPROM: 4KB
+	*Arquitectura: AVR 8bits
+	*Frecuencia de clock: 16MHz
+	*Voltaje de operación: 5V
+	*Periféricos principales:
+		*54 pines digitales I/O
+		*16 entradas analógicas
+		*4 UART (serial)
+		*SPI
+		*I2C
+		*Varios timeros de 16bits
+
+
+b) Investigue las características de la CPU AVR, incluyendo: arquitectura de la CPU (realice un diagrama en
+bloques), modelo de programación, modos de direccionamiento y resumen del conjunto de instrucciones (ISA).
+RTA:
+- Arquitectura: 8bit RISC Harvard. Pipeline simple de 2 etapas: Fetch & Execute. 32 Registros propósito general.
+  La mayoría de instrucciones se ejecutan en 1 ciclo.
+- Diagrama CHATGPTEADO
+                 +----------------------+
+                 |   Program Memory     |
+                 |       (FLASH)        |
+                 +----------+-----------+
+                            |
+                            | instruction bus
+                            v
+                   +------------------+
+                   | Instruction      |
+                   | Decoder          |
+                   +--------+---------+
+                            |
+                            v
++-----------------------------------------------------+
+|                     CPU CORE                        |
+|                                                     |
+|  +----------------+     +-----------------------+   |
+|  | Register File  |<--->|        ALU            |   |
+|  |   32 x 8 bit   |     | Arithmetic Logic Unit |   |
+|  +----------------+     +-----------------------+   |
+|           |                          |              |
+|           |                          |              |
+|           +-----------+--------------+              |
+|                       |                             |
+|                   Status Register                   |
+|                       (SREG)                        |
++-----------------------+-----------------------------+
+                        |
+                        v
+               +--------------------+
+               | Data Memory (SRAM) |
+               +--------------------+
+                        |
+                        v
+                    Peripherals
+        (Timers, UART, SPI, I2C, ADC, etc)
+
+- Modos de direccionamiento: Tiene 5.
+	*Inmediato: El valor está en la instrucción
+		LDI R16, 10
+	*Registro a registro: Opera entre registros.
+		ADD R16, R17
+	*Directo: Accede a memoria directamente.
+		LDS R16, 0x0100
+	*Indirecto: Usa un registro como puntero.
+		LD R16, x
+	*Indirecto con desplazamiento:
+		LDD R16, X+4
+
+- Resumen de ISA (Instruction Set Architectur)
+	*Aritméticas
+	ADD
+	ADC
+	SUB
+	SBC
+	INC
+	DEC
+	NEG
+
+	*Lógicas
+	AND
+	OR
+	EOR
+	COM
+
+	*Transferencia de datos
+	LD
+	LDS
+	ST
+	STS
+	MOV
+	LDI
+
+	*Control de flujo
+	RJMP
+	JMP
+	CALL
+	RET
+	BRNE
+	BREQ
+
+	*Manipulación de bits
+	SBI
+	CBI
+	SBIC
+	SBIS
+
+	*Control del sistema
+	NOP
+	SLEEP
+	WDR
+
+c) Puertos de Entrada/Salida Atmega328P: Describa qué registros se utilizan para controlar los puertos de entrada
+y salida. Realice un diagrama en bloques de un terminal de entrada y salida y explique su funcionamiento.
+RTA:
+- El Atmega328P tiene 3 puertos principales:
+	*PORTB PB0-PB7
+	*PORTC PC0-PC7
+	*PORTD PD0-PD7
+
+- Registros para controlar puertos: Sea x E {B,C,D}
+	*DDRx: Define si cada pin es entrada o salida, 0->entrada , 1->salida
+	*PORTx: Si el pin es de salida, controla el nivel lógico de cada pin, 1->HIGH (5V), 0->LOW (0V).
+	        Si el pin es entrada, activa o desactiva la resistencia pull-up interna.
+	*PINx: Se usa para leer el estado del ping físico.
+
+
+d) Investigue cual es la capacidad de corriente que puede manejar un terminal individual configurado como salida.
+¿Depende del estado lógico? ¿cuál es la capacidad de corriente que puede manejar el microcontrolador con
+todos los puertos funcionando simultáneamente?
+RTA:
+| Parámetro                           | ATmega328P  |
+| ----------------------------------- | ----------- |
+| Corriente máxima por pin (absoluta) | 40 mA       |
+| Corriente recomendada por pin       | ≤ 20 mA     |
+| Corriente total por pin             | 100mA       |
+| Corriente total del chip            | 200 mA      |
+| Puede entregar corriente            | Sí (source) |
+| Puede absorber corriente            | Sí (sink)   |
+
+
+e) Indique cuales son las dos posibilidades de conexión de un LED a un terminal de entrada y salida. Calcule la
+resistencia serie para que la corriente máxima por cada LED sea de 5mA. Muestre como configurar el terminal
+como salida y como modificar su estado lógico.
+RTA: 
+- Entrada (recibe corriente): PB0 -- |>| -- R -- Vcc(5V). 
+- Salida (entrega corriente): PB0 -- R -- |>| -- GND.
+	*Para A=5mA -> R=600ohm
+
+- Configuración del terminal:
+	DDRB |= (1 << PB0);
+
+- Cambiar estado lógico:
+	PORTB |= (1 << PB0);
+
+
+f) Se desea conectar un pulsador a una entrada digital del MCU. Investigue los posibles esquemas de conectar
+un pulsador y determine el algoritmo más adecuado para detectar en cada caso cuando el pulsador se presiona
+y se suelta. ¿Qué es una resistencia de pull-up? ¿y de pull-down? ¿Importa su valor? Investigue sobre cómo
+utilizar los pull-up internos del MCU.
+RTA: PREGUNTAR ABZ

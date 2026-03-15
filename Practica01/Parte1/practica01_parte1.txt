@@ -1,0 +1,228 @@
+PARTE 1: Repaso de lenguaje C
+
+a) Investigue sobre los distintos tipos de datos en C y en particular indique cuantos bits contiene cada tipo de dato y que rango de valores pueden representar cada tipo.
+RTA:
+  TIPO / BITS/ RANGO DE REPRESENTACIÓN / BYTES
+- signed char 8bits -128 a+127                             1
+- unsigned char 8bits 0 a 255                              1
+- short int 16bits -32768 a 32767                          2
+- unsigned short 16bits 0 a 65535                          2
+- int 16bits -32768 a 32767                                2
+- long 32bits - 2147483648 a 2147483647                    4
+- unsigned long 32bits 0 a 4294967295                      4
+- float (IEEE32) 32bits 1.17549x10-38 a 3.40282x10+38      4
+- double (IEEE64) 64bits 2.22507x10-308 a 1.79769x10+308   8
+IMPORTANTE: Todos estos valores son un estándar mínimo que garantiza C que tienen estos tipos
+de datos. El tamaño de cada tipo de dato lo define realmente del compilador, el cual generalmente
+lo hace según la arquitectura objetivo. Por eso se suele decir también que el tamaño de los datos
+depende de la PC.
+
+
+b) Investigue sobre los modificadores: static, volatile, register, const. Busque un ejemplo de cada caso.
+RTA: 
+- static: Una variable local declarada como static tiene una dirección fija de memoria RAM que se conserva
+	  durante toda la ejecución del programa. Su valor se mantiene entre las llamadas a la función.
+	  Una variable local declarada como static se convierte en una variable 'privada' y su alcance
+	  se limita solo al archivo .c donde está definida
+	  Una función declarada como static se convierte en una función 'privada' ".
+
+- volatile: Indica al compilador que la variable puede ser modificada por acciones externas al programa
+	    y que NO debe aplicar optimizaciones sobre la misma.
+	    Ej1: Variables que representan registros de la MCU deben ser declaradas como volátiles.
+	    Ej2: Variables que puedan ser modificadas por rutinas de interrupción deben ser volátiles.
+	    
+- const: Indica al compilador que la variable es únicamente de lectura y por lo tanto no puede 
+  	 modificarse.
+  	 
+- extern: Indica que la variable está definida en otro archivo. Son sí o sí globales y el linker 
+	  (etapa post compilador) se encarga de justamente linkear esas referencias a una variable
+	  externa con la variable de mismo nombre de otro archivo (todas siendo globales).
+	  
+- register: Sugiera al compilador que la variable local sea colocada en algún registro del CPU para
+	    un mejor tiempo de acceso.
+	    
+- const: Indica al compilador que la variable es read only. 
+
+
+c) Repase el uso de las sentencias del pre-procesador de C, entre ellas: #include, #define, #ifdef y typedef.
+RTA:
+- #define NAME replacement:  El prepcrocesador sustituye al identificador por el token-string
+  a lo largo del código antes de que siquiera lo vea el compilador. Un define sin token quita las 
+  repeticiones del identificador a lo largo del código. Se le dice también que define macros, de las 
+  cuales hay varios tipos:
+  	* Object-like macro
+  	#define PI 3.14
+  	
+  	* Function-like macro
+  	#define SQR(x) ((x)*(x))
+  	#define MAX(a,b) ((a)>(b) ? (a) : (b))
+  	
+- #undef NAME: Elimina la definición de NAME.
+
+- #include "file": El preprocesador sustituye la directiva por el contenido del fichero referenciado.
+  Cada include produce inclusión textual. Rutas y orden de búsqueda dependen del compilador y sus flags.
+
+- #if, #ifdef, #ifndef, #elif, #else, #endif EXPRESSION: EXPRESSION debe ser algo evaluable en tiempo
+  de preprocesado.
+  	* Ej
+  	#if defined(__GNUC__) && __GNUC__ >= 5
+  	  // codigo
+  	#endif
+  	
+Cositas: Existen macros predefinidas:
+	*__FILE__: Cadena literal con el nombre del fichero actual
+	*__LINE__: Número de línea actual (entero)
+	*__DATE__,__TIME__: Fecha y hora de compilación (literales, sea lo que sea)
+	
+  Cuando el procesador encuentra un identificador/name que es un macro, la sustitye por su replacement.
+  El texto resultante puede ser rescanneado para detectar e expandir otros macros. Un macro no se 
+  expande recursivamente si el macro aparece en su propio replacement (protección contra recursión inf)
+
+
+d) ¿Qué es una constante de carácter? ¿qué es una cadena de caracteres?
+RTA:
+- char: Tipo de dato que ocupa un byte
+	*Ej
+	char c='A';
+- cadena de char: Un array de char terminado en '\0'
+	*Ej
+	char s[] = "hola"; (se agrega '\0' solo)
+
+
+e) ¿Cuál es la diferencia entre una variable local y una global? ¿Por qué utilizaría una u otra?
+RTA: 
+- Scope: El alcance de la variable es distinto según si es global o local. 
+	*Local: Se declara dentro de una función o bloque y solo existe dentro del mismo.
+	*Global: Se declara fuera de cualquier función y puede ser utilizada por cualquier función 
+	del archivo.
+	
+- Lifetime: La duración en el almacenamiento también es distinta, define cuándo se reserva y libere memoria.
+	*Local: Se crean cuando la función comienza y se borran cuando termina.
+	*Globales: Se crean cuando el programa comienza y de borran cuando termina.
+	
+Cositas: Las variables locales se duplican en cada llamada, por lo que en algoritmo recursivo capaz conviene
+	variable global o por lo menos tenerlo en cuenta.
+
+f) Describa todos los operadores lógicos de C ¿cúal es la diferencia entre los operadores && y &? ¿entre || y |?
+¿y entre ! y ~? ¿Qué es una máscara de bits?
+RTA:
+- True/False: En C 0 -> Falso , !=0 -> Verdadero.
+- Operadores lógicos
+	*AND lógico: &&
+	*OR lógico: ||
+	*NOT lógico: !
+	Cositas: Los operadores && y || tienen evaluación corta, o sea, la 2da expresión puede no evaluarse,
+	lo que sirve para casos donde la 2da expresión puede llegar a tomar más procesamiento o casos como:
+	if (ptr != NULL && ptr->value > 0) donde si ptr = NULL entonces se saltea la 2da condición y no se
+	direcciona ptr=null.
+
+- Operadores bit a bit
+	*AND: &
+	*OR: ^
+	*NOT: ~
+	*SHIFT IZQ: <<
+	*SHIFT DER: >>
+	
+- Máscara de bits: Un número usado para operar con cadenas de bits, casos donde se requieren ciertos bits de 
+una cadena más larga, una máscara de bits puede ayudar a "filtrarlos".
+
+
+g) ¿Qué es un prototipo de función en C? ¿Cuáles son las alternativas para pasar argumentos a una función?
+¿Cómo se retorna un valor desde una función?
+RTA:
+- Prototipo de función: Es una declaración anticipada que dice al compilador el nombre de la función,
+  tipo de parámetros que recibe, qué devuelve y el orden de parámetros. Estos suelen ir en headers (archivos
+  terminados en .h).
+- Pasaje de argumentos: 
+	*Paso por valor: La función recibe una copia del valor, ej:
+	  void f(int x) {
+ 	      x = 10;
+	  }
+	 x es una copia del valor del argumento que se le haya pasado a f.
+	*Paso por dirección (como pasaje por referencia): Se pasa la dirección de la variable usando punteros.
+	 Ej:
+	 void f(int *x) {
+    	    *x = 10;
+	 }
+  La 2da forma permite modificar el valor de la variable original.
+- Retorno de valor: Se ha de espeficiar el tipo que devuelve la función. Ya con eso, con hacer return de una
+  variable válida basta. En el caso de que la función retorne un puntero, hay que tener el cuidado de que el
+  puntero no sea a una variable local, ya que en ese caso da error. Las funciones 'void' no retornar un valor
+  necesariamente.
+
+
+h) Repase el concepto de punteros y arreglos. Explique con ejemplos la relación entre ambos.
+RTA:
+- Puntero: Un puntero es una variable cuyo valor es una dirección de memoria.
+  	* *p -> Accede al contenido de esa dirección.
+- Arreglo: Un arreglo es un conjunto de elementos del mismo tipo almacenados contiguamente en memoria. El 
+  nombre 'a' representa la dirección del primer elemento, esto es: a = &a[0].
+
+- Relación entre arreglo y puntero: a[i] = *(a+i). 
+- Aritmética de punteros: Cuando se le suma un entero a un puntero, esto no suma bytes, sino elementos del
+  tipo apuntados (se encarga ya de moverse la cantidad de direcciones necesarias para pasar al próximo elemento).
+  
+- Diferencias: El array tiene tamaño fijo, definido en compilación. Un array no se puede reasignar, pero sí
+  un puntero. Sizeof() se comporta distinto, para un array da todo el espacio ocupado por todos los elementos del
+  array, para un puntero da como resultado el tamaño que tenga una dirección.
+
+Cositas: int* p, q; esto no significa que p y q son punteros, sino:
+	  int *p
+	  int q
+        entonces el '*' va por cada variable que yo quiero que sea puntero.
+       
+        Ejemplo de equivalencia:
+          a[i]
+	  *(a+i)
+	  p[i]
+	  *(p+i)
+	  i[a]
+	La última funciona porque: 
+	  a[i] = *(a+i)
+	  i[a] = *(i+a)
+	  
+	Paso de arrays a funciones: Cuando se pasa un array a, enrealidad se pasa *a, por eso dentro de la 
+	función no es posible conocer el tamaño del array, sizeof(a) da el tamaño de una dirección.
+
+i) Investigue sobre los tipos de variables struct y union (estructuras y uniones) en C. Busque un ejemplo de cada
+caso.
+RTA:
+- Struct: Una estructura es un tipo de dato que agrupa variables de distintos tipos en un mismo bloque de memoria,
+  donde cada miembro tiene su propio espacio de almacenamiento.
+  	struct Nombre {
+  	  tipo1 miembro1;
+  	  tipo2 miembro2;
+  	  . . .
+  	};
+- Union: Una unión es similar a una estructura, pero todos los miembros comparten la misma región de memoria,
+  esto significa que solo uno de los miembros puede contener un valor válido a la vez.
+        union Nombre {
+          tipo1 miembro1;
+          tipo2 miembro2;
+        }
+- Diferencias:
+| característica | struct                                      | union                                 |
+| -------------- | ------------------------------------------- | ------------------------------------- |
+| memoria        | cada campo tiene memoria propia             | todos comparten la misma              |
+| tamaño         | suma de los miembros (con padding)          | tamaño del miembro más grande         |
+| uso simultáneo | todos pueden tener valores válidos          | solo uno a la vez                     |
+| uso típico     | representar objetos con múltiples atributos | ahorrar memoria o reinterpretar datos |
+  	
+  	
+j) ¿Qué son los campos de bit de una estructura y cuál es la utilidad directa a bajo nivel?
+RTA:
+- Campos de bits: Solo pueden ser asignados dentro de struct o union. Son una forma de asignarle a miembros de
+  un struct o union una cantidad especifica de bits en lugar de los bytes completos de su tipo. Ej:
+    struct Estado {
+	    unsigned int encendido : 1;
+	    unsigned int error     : 1;
+	    unsigned int modo      : 2;
+    };
+  El orden en el que se disponen los bits depende del compilador, arquitectura y endianness.
+  TIPOS: Solo se permiten ciertos tipos para los campos de bits:
+  	int
+  	signed int
+  	unsigned int
+  En la práctica siempre se usa unsigned int. 
+  El tamaño en bits asignado no puede superar el del tipo base.
+  
