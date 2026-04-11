@@ -13,6 +13,7 @@
 
 void led_Rebote(uint8_t rebote){
 // Desde el LSB hacia el MSB cada 100ms se enciende un led a al vez
+	PORTD = 0x01; // Inicia en el LSB
 	uint8_t izq=1;
 	while(1){
 		if (rebote == 1){
@@ -23,7 +24,7 @@ void led_Rebote(uint8_t rebote){
 		_delay_ms(100);
 		
 		if (izq ==1) PORTD = PORTD << 1;
-		}else if (izq == 0) PORTD = PORTD >> 1;
+		else if (izq == 0) PORTD = PORTD >> 1;
 		
 	}	
 }
@@ -33,17 +34,13 @@ int main(void)
     /* Setup */
 	DDRD = 0xFF; // Definimos todo el puerto D como Output
 	DDRB |= (1 << PORTB0); // Definimos pin 0 de puerto B como Output
-	//DDRC &= ~((1<< PORTC0) | (1<< PORTC1)) // Forzamos puertos C como entrada
-	//PORTC |= ((1<< PORTC0) | (1<< PORTC1)); // Pull up interno para ambas entradas
+	DDRC &= ~((1<< PORTC0) | (1<< PORTC1)); // Forzamos puertos C como entrada
+	PORTC |= ((1<< PORTC0) | (1<< PORTC1)); // Pull up interno para ambas entradas
 	
     while (1) 
     {
-		PORTD = 0xFF;
-		_delay_ms(100);
-		PORTD = 0x00;
-		_delay_ms(100);
-		PORTD = 0x01;
-		led_Rebote(0);
+		
+		led_Rebote(1);
 	}
 }
 
