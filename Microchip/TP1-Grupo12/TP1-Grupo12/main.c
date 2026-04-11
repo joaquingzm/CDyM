@@ -11,35 +11,53 @@
 
 
 
-void led_Reboete(){
+void led_Rebote(uint8_t rebote){
 // Desde el LSB hacia el MSB cada 100ms se enciende un led a al vez
-	uint8_t pinEntrada=PIND;
-	while(estado1){
-				
+	uint8_t dir=1;
+	while(1){
+		_delay_ms(100);
+		if (rebote == 1){
+			if (PORTD & 1 ) dir = 1;
+			if (PORTD & 0x80) dir = 0;	
+		}else if (PORTD == 0){
+		PORTD = 1;
+		}
+		if (dir==1){
+			PORTD = PORTD << 1;
+		}else if (dir == 0){
+			PORTD = PORTD >> 1;
+		}
 	}	
 }
 
-void led_Desplaazmiento(){
+void led_Desplazamiento(){
 // Desde el LSB hacia el MSB se desplaza repetitivamente
-
-	while(estado2){
-		
+	
+	while(1){
+		_delay_ms(100);
+		PORTD = PORTD << 1;
+		if (PORTD == 0){
+			PORTD = 1;
+		}
 	}
 }
-
-
-
 
 int main(void)
 {
     /* Setup */
 	DDRD = 0xFF; // Definimos todo el puerto D como Output
 	DDRB |= (1 << PORTB0); // Definimos pin 0 de puerto B como Output
-	DDRC &= ~((1<< PORTC0) | (1<< PORTC1)) // Forzamos puertos C como entrada
-	PORTC |= ((1<< PORTC0) | (1<< PORTC1)) // Pull up interno para ambas entradas
+	//DDRC &= ~((1<< PORTC0) | (1<< PORTC1)) // Forzamos puertos C como entrada
+	//PORTC |= ((1<< PORTC0) | (1<< PORTC1)); // Pull up interno para ambas entradas
 	
     while (1) 
     {
-    }
+		PORTD = 0xFF;
+		_delay_ms(100);
+		PORTD = 0x00;
+		_delay_ms(100);
+		PORTD = 0x01;
+		led_Rebote(0);
+	}
 }
 
