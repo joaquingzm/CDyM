@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 000006dc  00000000  00000000  00000a02  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002fd  00000000  00000000  000010de  2**0
+  7 .debug_line   00000303  00000000  00000000  000010de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000044  00000000  00000000  000013dc  2**2
+  8 .debug_frame  00000044  00000000  00000000  000013e4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003fd  00000000  00000000  00001420  2**0
+  9 .debug_str    000003fd  00000000  00000000  00001428  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000013f  00000000  00000000  0000181d  2**0
+ 10 .debug_loc    0000013f  00000000  00000000  00001825  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000020  00000000  00000000  0000195c  2**0
+ 11 .debug_ranges 00000020  00000000  00000000  00001964  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -79,29 +79,29 @@ Disassembly of section .text:
 		if (PORTD == 0){
 			PORTD = 1;
   80:	91 e0       	ldi	r25, 0x01	; 1
-  82:	2f ef       	ldi	r18, 0xFF	; 255
-  84:	31 ee       	ldi	r19, 0xE1	; 225
-  86:	44 e0       	ldi	r20, 0x04	; 4
-  88:	21 50       	subi	r18, 0x01	; 1
-  8a:	30 40       	sbci	r19, 0x00	; 0
-  8c:	40 40       	sbci	r20, 0x00	; 0
-  8e:	e1 f7       	brne	.-8      	; 0x88 <led_Rebote+0x8>
-  90:	00 c0       	rjmp	.+0      	; 0x92 <led_Rebote+0x12>
-  92:	00 00       	nop
-  94:	81 30       	cpi	r24, 0x01	; 1
-  96:	29 f4       	brne	.+10     	; 0xa2 <led_Rebote+0x22>
-  98:	58 99       	sbic	0x0b, 0	; 11
-  9a:	91 e0       	ldi	r25, 0x01	; 1
-  9c:	5f 9b       	sbis	0x0b, 7	; 11
-  9e:	08 c0       	rjmp	.+16     	; 0xb0 <led_Rebote+0x30>
-  a0:	06 c0       	rjmp	.+12     	; 0xae <led_Rebote+0x2e>
-  a2:	2b b1       	in	r18, 0x0b	; 11
-  a4:	21 11       	cpse	r18, r1
-  a6:	04 c0       	rjmp	.+8      	; 0xb0 <led_Rebote+0x30>
-  a8:	21 e0       	ldi	r18, 0x01	; 1
-  aa:	2b b9       	out	0x0b, r18	; 11
-  ac:	01 c0       	rjmp	.+2      	; 0xb0 <led_Rebote+0x30>
-  ae:	90 e0       	ldi	r25, 0x00	; 0
+  82:	81 30       	cpi	r24, 0x01	; 1
+  84:	29 f4       	brne	.+10     	; 0x90 <led_Rebote+0x10>
+  86:	58 99       	sbic	0x0b, 0	; 11
+  88:	91 e0       	ldi	r25, 0x01	; 1
+  8a:	5f 9b       	sbis	0x0b, 7	; 11
+  8c:	08 c0       	rjmp	.+16     	; 0x9e <led_Rebote+0x1e>
+  8e:	06 c0       	rjmp	.+12     	; 0x9c <led_Rebote+0x1c>
+  90:	2b b1       	in	r18, 0x0b	; 11
+  92:	21 11       	cpse	r18, r1
+  94:	04 c0       	rjmp	.+8      	; 0x9e <led_Rebote+0x1e>
+  96:	21 e0       	ldi	r18, 0x01	; 1
+  98:	2b b9       	out	0x0b, r18	; 11
+  9a:	01 c0       	rjmp	.+2      	; 0x9e <led_Rebote+0x1e>
+  9c:	90 e0       	ldi	r25, 0x00	; 0
+  9e:	2f ef       	ldi	r18, 0xFF	; 255
+  a0:	31 ee       	ldi	r19, 0xE1	; 225
+  a2:	44 e0       	ldi	r20, 0x04	; 4
+  a4:	21 50       	subi	r18, 0x01	; 1
+  a6:	30 40       	sbci	r19, 0x00	; 0
+  a8:	40 40       	sbci	r20, 0x00	; 0
+  aa:	e1 f7       	brne	.-8      	; 0xa4 <led_Rebote+0x24>
+  ac:	00 c0       	rjmp	.+0      	; 0xae <led_Rebote+0x2e>
+  ae:	00 00       	nop
   b0:	91 30       	cpi	r25, 0x01	; 1
   b2:	21 f4       	brne	.+8      	; 0xbc <led_Rebote+0x3c>
   b4:	2b b1       	in	r18, 0x0b	; 11

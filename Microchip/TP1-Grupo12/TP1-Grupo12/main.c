@@ -13,33 +13,19 @@
 
 void led_Rebote(uint8_t rebote){
 // Desde el LSB hacia el MSB cada 100ms se enciende un led a al vez
-	uint8_t dir=1;
+	uint8_t izq=1;
 	while(1){
-		_delay_ms(100);
 		if (rebote == 1){
-			if (PORTD & 1 ) dir = 1;
-			if (PORTD & 0x80) dir = 0;	
-		}else if (PORTD == 0){
-		PORTD = 1;
-		}
-		if (dir==1){
-			PORTD = PORTD << 1;
-		}else if (dir == 0){
-			PORTD = PORTD >> 1;
-		}
-	}	
-}
-
-void led_Desplazamiento(){
-// Desde el LSB hacia el MSB se desplaza repetitivamente
-	
-	while(1){
+			if (PORTD & 1 ) izq = 1;	//Si el rebote esta activado, cambia dirección cuando toque extremos
+			if (PORTD & 0x80) izq = 0;	
+		}else if (PORTD == 0) PORTD = 1; //Si el rebote está desactivado, vuelve a el primer led
+		
 		_delay_ms(100);
-		PORTD = PORTD << 1;
-		if (PORTD == 0){
-			PORTD = 1;
-		}
-	}
+		
+		if (izq ==1) PORTD = PORTD << 1;
+		}else if (izq == 0) PORTD = PORTD >> 1;
+		
+	}	
 }
 
 int main(void)
