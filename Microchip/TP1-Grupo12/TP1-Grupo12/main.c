@@ -8,9 +8,9 @@
 #include <avr/io.h>
 #define F_CPU 16000000UL // Defino la frecuencia de oscilador en 16MHz
 #include <util/delay.h>
-#define LEDS_ITERATION 2 //100ms = leds_iteration * Refresh_rate_ms 
-#define NEO_ITERATION 3 // 150ms = Neo_iteration * Refresh_rate_ms
-#define REFRESH_RATE_MS 50
+#define LEDS_ITERATION 20 //100ms = leds_iteration * Refresh_rate_ms 
+#define NEO_ITERATION 30 // 150ms = Neo_iteration * Refresh_rate_ms
+#define REFRESH_RATE_MS 5
 
 uint8_t botonPresionado(uint8_t num){
 	if (!(PINC & (1<<num))) return 1;

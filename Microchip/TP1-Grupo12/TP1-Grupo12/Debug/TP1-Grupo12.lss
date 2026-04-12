@@ -3,29 +3,29 @@ TP1-Grupo12.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000001c4  2**0
+  0 .data         00000000  00800100  00800100  000001be  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000170  00000000  00000000  00000054  2**1
+  1 .text         0000016a  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  000001c4  2**0
+  2 .comment      00000030  00000000  00000000  000001be  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001f4  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001f0  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000038  00000000  00000000  00000234  2**0
+  4 .debug_aranges 00000038  00000000  00000000  00000230  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000082c  00000000  00000000  0000026c  2**0
+  5 .debug_info   0000082c  00000000  00000000  00000268  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000756  00000000  00000000  00000a98  2**0
+  6 .debug_abbrev 00000756  00000000  00000000  00000a94  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000037f  00000000  00000000  000011ee  2**0
+  7 .debug_line   0000037f  00000000  00000000  000011ea  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000064  00000000  00000000  00001570  2**2
+  8 .debug_frame  00000064  00000000  00000000  0000156c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000041c  00000000  00000000  000015d4  2**0
+  9 .debug_str    0000041c  00000000  00000000  000015d0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000001a0  00000000  00000000  000019f0  2**0
+ 10 .debug_loc    000001a0  00000000  00000000  000019ec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000028  00000000  00000000  00001b90  2**0
+ 11 .debug_ranges 00000028  00000000  00000000  00001b8c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -66,15 +66,15 @@ Disassembly of section .text:
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
   74:	0e 94 7b 00 	call	0xf6	; 0xf6 <main>
-  78:	0c 94 b6 00 	jmp	0x16c	; 0x16c <_exit>
+  78:	0c 94 b3 00 	jmp	0x166	; 0x166 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000080 <botonPresionado>:
-#define LEDS_ITERATION 2 //100ms = leds_iteration * Refresh_rate_ms 
-#define NEO_ITERATION 3 // 150ms = Neo_iteration * Refresh_rate_ms
-#define REFRESH_RATE_MS 50
+#define LEDS_ITERATION 20 //100ms = leds_iteration * Refresh_rate_ms 
+#define NEO_ITERATION 30 // 150ms = Neo_iteration * Refresh_rate_ms
+#define REFRESH_RATE_MS 5
 
 uint8_t botonPresionado(uint8_t num){
 	if (!(PINC & (1<<num))) return 1;
@@ -227,7 +227,7 @@ int main(void){
     while (1) 
     {
 		if (ledsIteration>=LEDS_ITERATION){
- 112:	12 30       	cpi	r17, 0x02	; 2
+ 112:	14 31       	cpi	r17, 0x14	; 20
  114:	58 f0       	brcs	.+22     	; 0x12c <main+0x36>
 			cambiarLeds(&leds,rebote,&izq);
  116:	ae 01       	movw	r20, r28
@@ -291,26 +291,23 @@ int main(void){
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 156:	2f ef       	ldi	r18, 0xFF	; 255
- 158:	30 e7       	ldi	r19, 0x70	; 112
- 15a:	92 e0       	ldi	r25, 0x02	; 2
- 15c:	21 50       	subi	r18, 0x01	; 1
- 15e:	30 40       	sbci	r19, 0x00	; 0
- 160:	90 40       	sbci	r25, 0x00	; 0
- 162:	e1 f7       	brne	.-8      	; 0x15c <main+0x66>
- 164:	00 c0       	rjmp	.+0      	; 0x166 <main+0x70>
- 166:	00 00       	nop
+ 156:	ef e1       	ldi	r30, 0x1F	; 31
+ 158:	fe e4       	ldi	r31, 0x4E	; 78
+ 15a:	31 97       	sbiw	r30, 0x01	; 1
+ 15c:	f1 f7       	brne	.-4      	; 0x15a <main+0x64>
+ 15e:	00 c0       	rjmp	.+0      	; 0x160 <main+0x6a>
+ 160:	00 00       	nop
 			}
 			
 			PORTD = leds;
 			ledsIteration = 0;
 		}
 		B1_prev=B1;
- 168:	08 2f       	mov	r16, r24
- 16a:	d3 cf       	rjmp	.-90     	; 0x112 <main+0x1c>
+ 162:	08 2f       	mov	r16, r24
+ 164:	d6 cf       	rjmp	.-84     	; 0x112 <main+0x1c>
 
-0000016c <_exit>:
- 16c:	f8 94       	cli
+00000166 <_exit>:
+ 166:	f8 94       	cli
 
-0000016e <__stop_program>:
- 16e:	ff cf       	rjmp	.-2      	; 0x16e <__stop_program>
+00000168 <__stop_program>:
+ 168:	ff cf       	rjmp	.-2      	; 0x168 <__stop_program>
