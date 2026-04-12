@@ -8,7 +8,9 @@
 #include <avr/io.h>
 #define F_CPU 16000000UL // Defino la frecuencia de oscilador en 16MHz
 #include <util/delay.h>
-#define LEDS_ITERATION 2
+#define LEDS_ITERATION 2 //100ms = leds_iteration * Refresh_rate_ms 
+#define NEO_ITERATION 3 // 150ms = Neo_iteration * Refresh_rate_ms
+#define REFRESH_RATE_MS 50
 
 uint8_t botonPresionado(uint8_t num){
 	if (!(PINC & (1<<num))) return 1;
@@ -17,15 +19,12 @@ uint8_t botonPresionado(uint8_t num){
 
 
 void cambiarLeds(uint8_t *leds, uint8_t rebote, uint8_t *izq){
-	if (*leds == 0x01){
-		if (rebote){
+	if (*leds == 0x01){	//Extremo derecho
 			*izq = 1;
 			*leds <<=1;
 			return;
-		}
 	}
-	
-	if (*leds == 0x80){
+	if (*leds == 0x80){	//Extremo izquierdo
 		if (rebote){
 			*izq = 0;
 			*leds >>= 1;
@@ -34,8 +33,7 @@ void cambiarLeds(uint8_t *leds, uint8_t rebote, uint8_t *izq){
 		}
 		return;
 	}
-	
-	if (*izq) *leds <<= 1;
+	if (*izq) *leds <<= 1;	// Desplazar a Izquierda o Derecha
 	else *leds >>= 1;
 	return;
 }
@@ -100,7 +98,7 @@ int main(void){
 		
 		ledsIteration++;
 		//neoIteration++;
-		_delay_ms(50);
+		_delay_ms(REFRESH_RATE_MS);
 	}
 }
 
