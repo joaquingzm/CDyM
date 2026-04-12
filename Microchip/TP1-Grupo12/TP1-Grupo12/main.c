@@ -11,62 +11,157 @@
 #include <util/delay.h>
 
 #define NOP() __asm__ __volatile__("nop\n\t")
-#define NOP_1()  NOP();NOP();NOP();NOP();
-#define NOP_2() NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP();
 
+#define LEDS_ITERATION 20 //100ms = leds_iteration * Refresh_rate_ms
+#define NEO_ITERATION 30 // 150ms = Neo_iteration * Refresh_rate_ms
+#define REFRESH_RATE_MS 5
 
-
-
+// Variables Neopixel
 static uint8_t np_modo = 0;
 static uint8_t np_pos = 0;
 static uint8_t np_paridad = 0;
+static uint8_t np_Iteration = 0;
 
+// Variables leds
+static uint8_t ld_modo = 0;
+static uint8_t ld_leds = 0x01;
+static uint8_t ld_izq = 1;
+static uint8_t ld_Iteration = 0;
 
-/*
-void led_Reboete(){
-// Desde el LSB hacia el MSB cada 100ms se enciende un led a al vez
-	uint8_t pinEntrada=PIND;
-	while(estado1){
-			
-	}	
-}
+// --- NEOPIXEL
+void enviar_byte(uint8_t n);
+void neopixel();
+// END OF NEOPIXEL 
 
-void led_Desplaazmiento(){
-// Desde el LSB hacia el MSB se desplaza repetitivamente
+// LEDS
+void cambiarLeds();
+// END OF LEDS
 
-	while(estado2){
+void setup();
+uint8_t botonPresionado(uint8_t n);
+
+int main(void)
+{
+	setup();
+	
+	/*Botones*/
+	uint8_t B1;
+	uint8_t B1_prev = 0;
+	uint8_t B2;
+	uint8_t B2_prev = 0;
+	
+	PORTD = ld_leds;
+	 
+    while (1) 
+    {
 		
+		if (ld_Iteration>=LEDS_ITERATION){
+			cambiarLeds();
+			ld_Iteration=0;
+		}
+		
+		if (np_Iteration>=NEO_ITERATION){
+			neopixel();
+			np_Iteration=0;
+		}
+		
+		
+		B1 = botonPresionado(PINC0);
+		if (B1_prev && !B1){
+			ld_modo= ld_modo^1;
+			
+			if (ld_modo){
+				ld_leds = 0x80;
+				ld_izq = 0;
+			}else {
+				ld_leds = 0x01;
+				ld_izq = 1;
+			}
+			
+			PORTD = ld_leds;
+			ld_Iteration = 0;
+		}
+		B1_prev=B1;
+		
+		B2 = botonPresionado(PINC1);
+		if (B2_prev && !B2){
+			np_modo= np_modo^1;
+			
+			if (np_modo){
+				np_paridad = 0;
+			}else {
+				np_pos = 0;
+			}
+			
+			np_Iteration = 0;
+		}
+		B2_prev=B2;
+		
+		ld_Iteration++;
+		np_Iteration++;
+		PORTD = ld_leds;
+		_delay_ms(REFRESH_RATE_MS);
 	}
+		
 }
-*/
 
-// NEOPIXEL SECCION PAAAA
+void setup(){
+	/* Setup */
+	DDRD = 0xFF; // Definimos todo el puerto D como Output
+	DDRB |= (1 << PORTB0); // Definimos pin 0 de puerto B como Output
+	DDRC &= ~((1<< PORTC0) | (1<< PORTC1)); // Forzamos puertos C como entrada
+	PORTC |= ((1<< PORTC0) | (1<< PORTC1)); // Pull up interno para ambas entradas
 
+	np_modo = 0;
+	np_paridad = 0;
+	np_pos = 0;
+}
+
+uint8_t botonPresionado(uint8_t n){
+	if (!(PINC & (1<<n))) return 1;
+	else return 0;
+}
+
+// --- NEOPIXEL
 void enviar_byte(uint8_t n){
-	for (int i=7; i>=0; i--){
-		if((n & (1 << i))){
-			PORTB |=  (1 << PORTB0);
-			NOP_2();
-			PORTB &= ~(1 << PORTB0);
-			NOP_1();
+	for (uint8_t i=0; i<8; i++){ // Cada iteración: Suma 5 Ciclos ->
+		// Última iteración:  Suma 4 Ciclos
+		
+		// BIT 1
+		if(n & 0x80){ // Suma ~3 Ciclos (Si bit 1 -> 2 Ciclos, si bit 0 -> 3 Ciclos
+			
+			// T1H = 12 Ciclos -> 750ns
+			// T1L = 9 Ciclos -> 562,5ns
+			
+			PORTB |=  (1 << PORTB0); // Suma 3 Ciclos -> 187,5ns
+			NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP();NOP(); // Suma 9 Ciclos -> 562,5ns
+			PORTB &= ~(1 << PORTB0); // Suma 3 Ciclos -> 187,5ns
+			
 		}
+		
+		// BIT 0
 		else {
-			PORTB |=  (1 << PORTB0);
-			NOP_1();
-			PORTB &= ~(1 << PORTB0);
-			NOP_2();
+			
+			// T0H = 6 Ciclos -> 375ns
+			// T0L = 14 Ciclos -> 875ns
+			
+			PORTB |=  (1 << PORTB0); // Suma 3 Ciclos -> 187,5ns
+			NOP();NOP();NOP(); // Suma 3 Ciclos -> 187,5ns
+			PORTB &= ~(1 << PORTB0); // Suma 3 Ciclos -> 187,5ns
+			NOP();NOP();NOP();NOP();NOP(); // Suma 5  Ciclos -> 312,5ns
+			
 		}
+		n <<=1; // Suma 1 Ciclo -> 62,5ns
 	}
 }
 
 void neopixel(){
 	// Modo C
-	if(np_modo == 0){	
-		np_pos = 0;
+	if(np_modo == 0){
 		for (int i=0; i<4; i++){
-			enviar_byte((255 & (np_paridad)));
 			enviar_byte(0);
-			enviar_byte(0);	
+			enviar_byte(0);
+			enviar_byte((255 & (np_paridad)));
 			
 			enviar_byte(0);
 			enviar_byte((255 & ~(np_paridad)));
@@ -76,40 +171,36 @@ void neopixel(){
 	}
 	// Modo D
 	else {
-		np_paridad = 0;
 		for (int i = 0; i < 8; i++){
-			enviar_byte(255 * (i == np_pos));
+			enviar_byte(255 * (i == 8 - np_pos));
 			enviar_byte(0);
 			enviar_byte(0);
 		}
 		np_pos++;
-		if (np_pos >= 8) np_pos = 0;
+		if (np_pos > 8) np_pos = 0;
 	}
 }
-// END OF NEOPIXEL SECCION
-int main(void)
-{
-    /* Setup */
-	DDRD = 0xFF; // Definimos todo el puerto D como Output
-	DDRB |= (1 << PORTB0); // Definimos pin 0 de puerto B como Output
-	DDRC &= ~((1<< PORTC0) | (1<< PORTC1)); // Forzamos puertos C como entrada
-	PORTC |= ((1<< PORTC0) | (1<< PORTC1)); // Pull up interno para ambas entradas
-	
-	np_modo = 0;
-	np_paridad = 0;
-	np_pos = 0;
-	 
-    while (1) 
-    {
-		
-		neopixel();
+// END OF NEOPIXEL
 
-		
-		// RESET
-		PORTB &= ~(1 << PORTB0);
-		_delay_ms(150);
-		
-		
-    }
+
+// LEDS
+void cambiarLeds(){
+	if (ld_leds == 0x01){	//Extremo derecho
+		ld_izq = 1;
+		ld_leds <<=1;
+		return;
+	}
+	if (ld_leds == 0x80){	//Extremo izquierdo
+		if (ld_modo){
+			ld_izq = 0;
+			ld_leds >>= 1;
+		}else {
+			ld_leds = 0x01;
+		}
+		return;
+	}
+	if (ld_izq) ld_leds <<= 1;	// Desplazar a Izquierda o Derecha
+	else ld_leds >>= 1;
+	return;
 }
-
+// END OF LEDS
