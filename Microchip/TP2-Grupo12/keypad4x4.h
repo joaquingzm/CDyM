@@ -4,7 +4,7 @@
 
 /*=====[Inclusions of public function dependencies]=================*/
 #include <avr/io.h>
-#include <stdint.h
+#include <stdint.h>
 
 /*=====[Definition macros of public constants]======================*/
 #define KEYPAD_NO_KEY   0xFF
@@ -18,7 +18,7 @@
  *          PORTD como salidas (columnas) en HIGH.
  *          Debe llamarse antes de cualquier otra función del módulo.
  */
-void Keypad_init(void);
+void KEYPAD_init(void);
 
 /**
  * @brief   Escanea el teclado y detecta una nueva tecla presionada.
@@ -29,7 +29,7 @@ void Keypad_init(void);
  * @return  1       Si hay una nueva tecla presionada. El valor está en *pkey.
  * @return  0       Si no hay nueva tecla presionada.
  */
-uint8_t Keypad_scan(uint8_t *pkey);
+uint8_t KEYPAD_scan(uint8_t *pkey);
 
 /*=====[Avoid multiple inclusion - end]=============================*/
 #endif /* _KEYPAD_H_ */
