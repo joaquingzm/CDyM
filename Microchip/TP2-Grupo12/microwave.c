@@ -50,7 +50,8 @@ void microwave_init(){
 	new_state = 1u;
 	key = 0;
 
-	LCDclr();
+	//LCDclr();
+	LCD_Setup_Begin();
 	microwave_show_time(0u);
 }
 
@@ -73,7 +74,7 @@ static void microwave_state_idle(void)
 {
 	if (new_state)
 	{
-		LCDclr();
+		LCDclr(); // Esto se hace solo una vez en el modo idle? o siempre? podría implementar cartel "Introduzca ..."
 		microwave_show_time(cooking_time);
 		new_state = 0u;
 	}
