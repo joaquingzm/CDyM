@@ -47,6 +47,13 @@ void keypad_read(char *key)
 
 static uint8_t KEYPAD_filas[4] = {0x10,0x08,0x01,0x80}; //PB4=0x10 - PB3=0x08 - PB0=0x01 - PB7=0x80	//PORTB
 static uint8_t KEYPAD_columnas[4] = {0x08, 0x20, 0x10, 0x04}; // PD3=0x08, PD5=0x20, PD4=0x10, PD2=0x04 //PORTD
+	
+static const char KEYPAD_map[4][4] = {
+	{'7','8','9','A'},
+	{'4','5','6','B',},
+	{'1','2','3','C',},
+	{KEYPAD_NO_KEY,'0',KEYPAD_NO_KEY,'D'}
+};
 
 /*=====[Prototypes (declarations) of private functions]=============*/
 //static void funPrivada(void);
@@ -70,6 +77,7 @@ uint8_t KEYPAD_scan (uint8_t *pkey)
 	static uint8_t Old_key, Last_valid_key=KEYPAD_NO_KEY; // no hay tecla presionada;
 	uint8_t Key;
 	Key= KEYPAD_actualizar();
+	
 	if(Key==KEYPAD_NO_KEY){
 		Old_key=KEYPAD_NO_KEY; // no hay tecla presionada
 		Last_valid_key=KEYPAD_NO_KEY;
@@ -102,11 +110,15 @@ static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
 
 		for(r=0; r<4; r++){
 			if(!(PINB & KEYPAD_filas[r])){
-				return (r*4 + c);
+				//return (r*4 + c);
+				return KEYPAD_map[r][c];
 			}
 		}
 	}
 	
 	return KEYPAD_NO_KEY;
+<<<<<<< HEAD
 >>>>>>> 80bd31c (Keypad header y source modularizado y comentado)
+=======
+>>>>>>> 07c37fc (CÃ³digo funcional en proteus sin timer con algunos retoques aun por hacer)
 }
