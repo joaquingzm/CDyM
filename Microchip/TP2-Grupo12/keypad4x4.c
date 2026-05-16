@@ -43,16 +43,18 @@ void keypad_read(char *key)
 /*=====[Definitions of public global variables]=====================*/
 //int32_t varGlobalPublica = 0;
 
-/*=====[Definitions of private global variables]====================*/+
+/*=====[Definitions of private global variables]====================*/
 
-static uint8_t Keypad_filas[4] = {0x10,0x08,0x01,0x80}; //PB4=0x10 - PB3=0x08 - PB0=0x01 - PB7=0x80	//PORTB
-static uint8_t Keypad_columnas[4] = {0x08, 0x20, 0x10, 0x04}; // PD3=0x08, PD5=0x20, PD4=0x10, PD2=0x04 //PORTD
+static uint8_t KEYPAD_filas[4] = {0x10,0x08,0x01,0x80}; //PB4=0x10 - PB3=0x08 - PB0=0x01 - PB7=0x80	//PORTB
+static uint8_t KEYPAD_columnas[4] = {0x08, 0x20, 0x10, 0x04}; // PD3=0x08, PD5=0x20, PD4=0x10, PD2=0x04 //PORTD
 
 /*=====[Prototypes (declarations) of private functions]=============*/
 //static void funPrivada(void);
+static uint8_t KEYPAD_actualizar(void);
+
 
 /*=====[Implementations of public functions]========================*/
-void keypad_init(){
+void KEYPAD_init(){
 	//PORTB para entradas, columnas
 	//PORTD para salida, filas
 	
@@ -63,14 +65,14 @@ void keypad_init(){
 	PORTD |= KEYPAD_COL_MASK;			//00111100	- Salidas en HIGH
 }
 
-uint8_t Keypad_scan (uint8_t *pkey)
+uint8_t KEYPAD_scan (uint8_t *pkey)
 {
-	static uint8_t Old_key, Last_valid_key=0xFF; // no hay tecla presionada;
+	static uint8_t Old_key, Last_valid_key=KEYPAD_NO_KEY; // no hay tecla presionada;
 	uint8_t Key;
-	Key= Keypad_actualizar();
-	if(Key==0xFF){
-		Old_key=0xFF; // no hay tecla presionada
-		Last_valid_key=0xFF;
+	Key= KEYPAD_actualizar();
+	if(Key==KEYPAD_NO_KEY){
+		Old_key=KEYPAD_NO_KEY; // no hay tecla presionada
+		Last_valid_key=KEYPAD_NO_KEY;
 		return 0;
 	}
 	if(Key==Old_key) { //2da verificación
@@ -85,21 +87,21 @@ uint8_t Keypad_scan (uint8_t *pkey)
 }
 
 /*=====[Implementations of interrupt functions]=====================*/
-void UART0_IRQHandler(void) {
+//void UART0_IRQHandler(void) {
 	// ...
-}
+//}
 
 /*=====[Implementations of private functions]=======================*/
-static uint8_t Keypad_actualizar(){ // Devuelve la posición del boton desde 0-15
-	static uint8_t r,c;
+static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
+	 uint8_t r,c;
 
 	for(c=0; c<4; c++){
 		// Pone la fila c en LOW, las demás en HIGH
-		PORTD = (PORTD | KEYPAD_COL_MASK) & ~Keypad_columnas[c];
+		PORTD = (PORTD | KEYPAD_COL_MASK) & ~KEYPAD_columnas[c];
 		_delay_us(1);
 
 		for(r=0; r<4; r++){
-			if(!(PINB & Keypad_filas[r])){
+			if(!(PINB & KEYPAD_filas[r])){
 				return (r*4 + c);
 			}
 		}
