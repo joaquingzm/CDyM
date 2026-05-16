@@ -1,6 +1,21 @@
-/*
- * CFile3.c
- *
- * Created: 5/16/2026 0:28:05
- *  Author: joaqu
- */ 
+#include "keypad4x4.h"
+
+static char simulated_key = 0;
+
+void keypad_init(void)
+{
+	simulated_key = 0;
+}
+
+void keypad_simulate_key(char new_key)
+{
+	simulated_key = new_key;
+}
+
+void keypad_read(char *key)
+{
+	*key = simulated_key;
+
+	/* consumir tecla */
+	simulated_key = 0;
+}

@@ -1,0 +1,70 @@
+/*====[Inclusion of own header]==================================*/
+#include "led.h"
+
+/*====[Inclusion of private function dependencies]===============*/
+#include <avr/io.h>
+
+/*====[Implemenations of public functions]=======================*/
+void led_init(void){
+	DDRB |= (1 << PORTB5);
+	DDRC |= (1 << PORTC4);
+	DDRC |= (1 << PORTC5);
+	
+	led_magnetron_off();
+	led_light_off();
+	led_alarm_off();
+}
+
+/***********************************************************************
+* Propósito:
+*   Enciende LED del magnetrón.
+***********************************************************************/
+void led_magnetron_on(void)
+{
+	PORTB |= (1 << PORTB5);
+}
+
+/***********************************************************************
+* Propósito:
+*   Apaga LED del magnetrón.
+***********************************************************************/
+void led_magnetron_off(void)
+{
+	PORTB &= ~(1 << PORTB5);
+}
+
+/***********************************************************************
+* Propósito:
+*   Enciende LED de luz interior.
+***********************************************************************/
+void led_light_on(void)
+{
+	PORTC |= (1 << PORTC4);
+}
+
+/***********************************************************************
+* Propósito:
+*   Apaga LED de luz interior.
+***********************************************************************/
+void led_light_off(void)
+{
+	PORTC &= ~(1 << PORTC4);
+}
+
+/***********************************************************************
+* Propósito:
+*   Enciende LED de alarma.
+***********************************************************************/
+void led_alarm_on(void)
+{
+	PORTC |= (1 << PORTC5);
+}
+
+/***********************************************************************
+* Propósito:
+*   Apaga LED de alarma.
+***********************************************************************/
+void led_alarm_off(void)
+{
+	PORTC &= ~(1 << PORTC5);
+}
