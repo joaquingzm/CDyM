@@ -10,13 +10,29 @@
 #define _LCD_MICROWAVE_H_
 
 /*=====[Inclusions of public function dependencies]=================*/
-
+#include <stdint.h>
 
 /*=====[Definition macros of public constants]======================*/
 
 /*=====[Prototypes (declarations) of public functions]==============*/
 
 
+
+/**
+ * @brief   Setear tiempo de cocción de microondas.
+ *
+ * @param	n Numero válido de la forma 2400 = 24:00
+ *
+ * @note    Muestra nn:nn en pantalla.
+ *          Debe llamarse antes de iniciar el conteo.
+ */
+void LCD_Start_Setup(uint16_t time);
+/**
+ * @brief   Actualiza LCD solo si hubo flanco de reloj.
+ *
+ * @note    Cada iteración verifica el conteo
+ */
+void LCD_Start_Refresh(void);
 /**
  * @brief   Actualiza tiempo de microondas desde segundos a minutos.
  *
@@ -32,7 +48,7 @@ void LCD_Reposo_Refresh(uint8_t n);
  * @note    Muestra 00:00 en pantalla.
  *          Debe llamarse al pasar al estado de reposo.
  */
-void LCD_Setup_Reposo(void);
+void LCD_Reposo_Setup(void);
 
 /**
  * @brief   Inicializa LCD.
