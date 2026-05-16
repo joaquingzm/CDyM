@@ -6,6 +6,7 @@
 
 int main(void)
 {
+<<<<<<< HEAD
 	/*
 	timer_init();
     microwave_init();
@@ -20,6 +21,13 @@ int main(void)
 	 keypad_init();
 	 lcd_init();
 	 microwave_init();
+=======
+    /* Replace with your application code */
+    while (1){
+	
+	}
+}
+>>>>>>> 5b473a9 (Antes de mergear keyboard con main pruebo en mi rama con proteus)
 
 	 keypad_simulate_key('1');
 	 microwave_update();
