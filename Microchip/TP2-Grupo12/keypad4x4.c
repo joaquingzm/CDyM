@@ -86,4 +86,3 @@ static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
 	}
 	
 	return KEYPAD_NO_KEY;
-}

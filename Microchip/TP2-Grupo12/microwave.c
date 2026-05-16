@@ -1,8 +1,12 @@
 /*====[Inclusion of own header]==================================*/
 #include "microwave.h"
+
 /*====[Inclusion of private function dependencies]===============*/
 #include "keypad4x4.h"
-#include "lcd.h"
+#include "lcd_microwave.h"
+#include "led.h"
+#include <stdint.h>
+
 /*====[Definitions of private global variables]==================*/
 static microwave_state_t state;
 static uint16_t cooking_time;
@@ -12,12 +16,19 @@ static uint16_t state_call_count;
 static uint8_t blink_flag;
 static uint8_t door_open;
 static uint8_t new_state;
-static uint8_t key;
+static char key;
+
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
 static void microwave_state_cooking(void);
 static void microwave_state_paused(void);
 static void microwave_state_finished(void);
+
+static void microwave_show_time(uint16_t seconds);
+static void microwave_add_digit(uint8_t digit);
+static void microwave_clear_time(void);
+static uint16_t microwave_seconds_to_mmss(uint16_t seconds);
+static uint16_t microwave_mmss_to_seconds(uint16_t mmss);
 
 static void (*microwave[])(void)=
 {
@@ -28,7 +39,7 @@ static void (*microwave[])(void)=
 };
 
 /*====[Implemenations of public functions]=======================*/
-void microwave_init(void){
+void microwave_init(){
 	state = IDLE;
 	cooking_time = 0u;
 	typed_mmss = 0u;
@@ -45,7 +56,7 @@ void microwave_init(void){
 
 void microwave_update(){
 	key = 0;
-	keypad_read(&key);   /* debe dejar key = 0 si no hay tecla nueva */
+	keypad_read(&key);
 
 	if (key == 'D')
 	{
@@ -100,17 +111,14 @@ static void microwave_state_cooking(void)
 		blink_count = 0u;
 		blink_flag = 0u;
 
-		/* Magnetrón ON */
-		/* Luz interior ON */
+		led_magnetron_on();
+		led_light_on();
 	}
 	if (door_open || (key == 'B'))
 	{
 		state = PAUSED;
 		new_state = 1u;
 		state_call_count = 0u;
-
-		/* Magnetrón OFF */
-		/* Luz interior OFF */
 		return;
 	}
 	if (key == 'C')
@@ -139,9 +147,6 @@ static void microwave_state_cooking(void)
 			state_call_count = 0u;
 			blink_count = 0u;
 			blink_flag = 0u;
-
-			/* Magnetrón OFF */
-			/* Luz interior OFF */
 			return;
 		}
 	}
@@ -156,8 +161,8 @@ static void microwave_state_paused(void)
 		new_state = 0u;
 		state_call_count = 0u;
 
-		/* Magnetrón OFF */
-		/* Luz interior OFF */
+		led_magnetron_off();
+		led_light_off();
 	}
 	if (key == 'B')
 	{
@@ -193,8 +198,8 @@ static void microwave_state_finished(void)
 		blink_count = 0u;
 		blink_flag = 1u;
 
-		/* Magnetrón OFF */
-		/* Luz interior OFF */
+		led_magnetron_off();
+		led_light_off();
 	}
 	/* Parpadeo cada 500 ms -> 5 llamadas de 100 ms */
 	blink_count++;
@@ -204,8 +209,10 @@ static void microwave_state_finished(void)
 		blink_flag = (uint8_t)!blink_flag;
 
 		lcd_clear();
+		led_alarm_off();
 		if (blink_flag)
 		{
+			led_alarm_on();
 			lcd_write_string("** FINISHED **");
 		}
 	}
