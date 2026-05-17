@@ -17,10 +17,5 @@ int main(void)
 			microwave_update();
 			FLAG_TIMER = 0;
 		}
-		
-	/*	
-		microwave_update();
-		_delay_ms(5);
-		*/
     }
 }

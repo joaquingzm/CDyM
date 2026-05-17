@@ -8,24 +8,12 @@
 #define KEYPAD_COL_MASK     0x3C    // Mascara de columnas en PORTD
 #define KEYPAD_ROW_MASK     0x99    // Mascara de filas en PORTB
 
-/*=====[Private function-like macros]===============================*/
-//#define moduleConfig moduleInit
-
-/*=====[Definitions of private data types]=========================*/
-// Function pointer data type
-//typedef void (*FuncPtrPrivado_t)(void *);
-
-/*=====[Definitions of external public global variables]============*/
-//extern int32_t varGlobalExterna;
-
-/*=====[Definitions of public global variables]=====================*/
-//int32_t varGlobalPublica = 0;
-
 /*=====[Definitions of private global variables]====================*/
-
+//Arreglo de filas y columnas para saber a que pines pertenece cada boton
 static uint8_t KEYPAD_filas[4] = {0x10,0x08,0x01,0x80}; //PB4=0x10 - PB3=0x08 - PB0=0x01 - PB7=0x80	//PORTB
 static uint8_t KEYPAD_columnas[4] = {0x08, 0x20, 0x10, 0x04}; // PD3=0x08, PD5=0x20, PD4=0x10, PD2=0x04 //PORTD
-	
+
+//Mapa del teclado para devolver caracter correcto según botón presionado	
 static const char KEYPAD_map[4][4] = {
 	{'7','8','9','A'},
 	{'4','5','6','B',},
@@ -34,7 +22,6 @@ static const char KEYPAD_map[4][4] = {
 };
 
 /*=====[Prototypes (declarations) of private functions]=============*/
-//static void funPrivada(void);
 static uint8_t KEYPAD_actualizar(void);
 
 
@@ -72,13 +59,8 @@ uint8_t KEYPAD_scan (uint8_t *pkey)
 	return 0;
 }
 
-/*=====[Implementations of interrupt functions]=====================*/
-//void UART0_IRQHandler(void) {
-	// ...
-//}
-
 /*=====[Implementations of private functions]=======================*/
-static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
+static uint8_t KEYPAD_actualizar(){ 
 	 uint8_t r,c;
 
 	for(c=0; c<4; c++){
@@ -88,10 +70,9 @@ static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
 
 		for(r=0; r<4; r++){
 			if(!(PINB & KEYPAD_filas[r])){
-				return KEYPAD_map[r][c];
+				return KEYPAD_map[r][c]; //Devuelve el caracter correcto según el mapeo de teclas
 			}
 		}
 	}
-	
 	return KEYPAD_NO_KEY;
 }
