@@ -34,7 +34,7 @@ void LCD_state_msg(uint8_t *text, uint8_t size);
  * @note    Muestra nn:nn en pantalla.
  *          Debe llamarse antes de iniciar el conteo.
  */
-void LCD_loading();
+void LCD_loading()
 
 /**
  * @brief   Setear tiempo de cocción de microondas.

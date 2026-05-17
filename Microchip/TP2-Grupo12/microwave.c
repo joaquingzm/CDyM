@@ -18,7 +18,9 @@ static uint8_t door_open;
 static uint8_t new_state;
 static char key;
 static uint8_t cooking_state[] = "COOKING";
+static uint8_t paused_state[] = "PAUSED";
 static uint8_t idle_state[] = "Tiempo de cocción";
+static uint8_t finished_state[] = "FINISHED";
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
 static void microwave_state_cooking(void);
@@ -113,6 +115,7 @@ static void microwave_state_cooking(void)
 	{
 		//LCDclr();
 		LCD_state_msg(cooking_state,sizeof(cooking_state));
+		LCD_loading();
 		microwave_show_time(cooking_time);
 		new_state = 0u;
 		state_call_count = 0u;
@@ -165,8 +168,7 @@ static void microwave_state_paused(void)
 {
 	if (new_state)
 	{
-		LCDclr();
-		LCDstring("PAUSED",6);
+		LCD_state_msg(paused_state,sizeof(paused_state));
 		new_state = 0u;
 		state_call_count = 0u;
 
@@ -199,8 +201,7 @@ static void microwave_state_finished(void)
 {
 	if (new_state)
 	{
-		LCDclr();
-		LCDstring("** FINISHED **",14);
+		LCD_state_msg(finished_state,sizeof(finished_state));
 		//LCD_finished();
 
 		new_state = 0u;
@@ -218,14 +219,12 @@ static void microwave_state_finished(void)
 		blink_count = 0u;
 		blink_flag = (uint8_t)!blink_flag;
 
-		LCDclr();
-		//LCD_flash();
+		LCD_flash();
 		led_alarm_off();
 		if (blink_flag)
 		{
 			led_alarm_on();
-			LCDstring("** FINISHED **",14);
-			//LCD_flash();
+			LCD_flash();
 		}
 	}
 	/* 5 segundos totales -> 50 llamadas de 100 ms */
