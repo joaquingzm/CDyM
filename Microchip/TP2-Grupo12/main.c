@@ -23,6 +23,7 @@ int main(void)
 			FLAG_TIMER = 0;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 	*/
 	 KEYPAD_init();
@@ -64,5 +65,7 @@ int main(void)
 		microwave_update();
 		_delay_ms(5);
 		*/
+=======
+>>>>>>> cf3d749 (Y masomenos)
     }
 }

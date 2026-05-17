@@ -37,7 +37,6 @@ const char* lcd_get_content(void)
 
 /*=====[Definition macros of private constants]=====================*/
 
-
 /*=====[Private function-like macros]===============================*/
 //#define moduleConfig moduleInit
 
@@ -56,17 +55,35 @@ static uint16_t countdown_time = 0;
 static uint8_t refresh_lcd = 0; //flag para actualizar LCD
 static uint8_t countdown_active = 0; //flag para determinar si corre el tiempo
 static uint8_t display_visible=1;
+static uint8_t cooking_state[] = "COOKING";
+static uint8_t idle_state[] = "Tiempo de cocción";
+static uint8_t loading[] = {' ','.','o','O','o','.'};
+static uint8_t i =0;
 
 /*=====[Prototypes (declarations) of private functions]=============*/
 
 
 /*=====[Implementations of public functions]========================*/
+void LCD_state_msg(uint8_t *text, uint8_t size){
+	LCDclr();
+	LCDGotoXY(0,1);
+	LCDstring(text,size-1);
+	LCDGotoXY(0,0);
+}
+
 void LCD_Reposo_Setup(void){
 	LCDclr();
 	LCDGotoXY(0,0);
 	LCDescribeDato(00,2);
 	LCDsendChar(':');
 	LCDescribeDato(00,2);
+}
+
+void LCD_loading(void){
+	LCDGotoXY(15,1);
+	LCDsendChar(loading[i]);
+	i++;
+	if(i==6)i=0;
 }
 
 void LCD_Reposo_Refresh(uint8_t num){
@@ -110,11 +127,6 @@ void LCD_flash(){
 		display_visible=1;
 	}
 }
-
-/*=====[Implementations of interrupt functions]=====================*/
-//void UART0_IRQHandler(void) {
-// ...
-//}
 
 /*=====[Implementations of private functions]=======================*/
 <<<<<<< HEAD
