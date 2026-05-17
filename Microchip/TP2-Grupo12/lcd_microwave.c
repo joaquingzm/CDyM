@@ -1,29 +1,44 @@
+
+/*=====[Inclusion of own header]====================================*/
 #include "lcd_microwave.h"
-#include <stdio.h>
-#include <string.h>
 
-static char lcd_buffer[64];
+/*=====[Inclusions of private function dependencies]================*/
+#include "lcd.h"
 
-void lcd_init(void)
-{
-	lcd_buffer[0] = '\0';
+/*=====[Definition macros of private constants]=====================*/
+
+/*=====[Definitions of private global variables]====================*/
+static uint8_t display_visible=1;
+static uint8_t loading[] = {' ','.','o','O','o','.'};
+static uint8_t i =0;
+
+/*=====[Implementations of public functions]========================*/
+void LCD_state_msg(uint8_t *text, uint8_t size){
+	LCDclr();
+	LCDGotoXY(0,1);
+	LCDstring(text,size-1);
+	LCDGotoXY(0,0);
 }
 
-void lcd_clear(void)
-{
-	lcd_buffer[0] = '\0';
-
-	printf("[LCD CLEAR]\n");
+void LCD_loading(void){
+	LCDGotoXY(15,1);
+	LCDsendChar(loading[i]);
+	i++;
+	if(i==6)i=0;
 }
 
-void lcd_write_string(const char *str)
-{
-	strncpy(lcd_buffer, str, sizeof(lcd_buffer));
-
-	printf("[LCD]: %s\n", lcd_buffer);
+void LCD_Setup_Begin(){
+	LCD_Init();
 }
 
-const char* lcd_get_content(void)
-{
-	return lcd_buffer;
+void LCD_flash(){
+	if (display_visible) {
+		LCDblank();
+		display_visible=0;
+	}else{ 
+		LCDvisible();
+		display_visible=1;
+	}
 }
+
+

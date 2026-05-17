@@ -2,12 +2,14 @@
 #include "keypad4x4.h"
 #include "microwave.h"
 #include "lcd_microwave.h"
-//#include "timer.h"
+#include <util/delay.h>
+#include "timer.h"
 
 int main(void)
 {
-	/*
 	timer_init();
+	KEYPAD_init();
+	LCD_Setup_Begin();
     microwave_init();
     while (1) 
     {
@@ -16,23 +18,4 @@ int main(void)
 			FLAG_TIMER = 0;
 		}
     }
-	*/
-	 keypad_init();
-	 lcd_init();
-	 microwave_init();
-
-	 keypad_simulate_key('1');
-	 microwave_update();
-
-	 keypad_simulate_key('3');
-	 microwave_update();
-
-	 keypad_simulate_key('0');
-	 microwave_update();
-	 
-	 keypad_simulate_key('0');
-	 microwave_update();
-
-	 keypad_simulate_key('A');
-	 microwave_update();
 }

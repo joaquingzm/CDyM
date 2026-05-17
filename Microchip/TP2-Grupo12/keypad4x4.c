@@ -1,21 +1,65 @@
+/*=====[Inclusion of own header]====================================*/
 #include "keypad4x4.h"
 
-static char simulated_key = 0;
+/*=====[Inclusions of private function dependencies]================*/
+#include <util/delay.h>
 
-void keypad_init(void)
-{
-	simulated_key = 0;
+/*=====[Definition macros of private constants]=====================*/
+#define KEYPAD_COL_MASK     0x3C    // Mascara de columnas en PORTD
+#define KEYPAD_ROW_MASK     0x99    // Mascara de filas en PORTB
+
+
+/*=====[Prototypes (declarations) of private functions]=============*/
+static uint8_t KEYPAD_actualizar(void);
+
+
+/*=====[Implementations of public functions]========================*/
+void KEYPAD_init(){
+	//PORTB para entradas, columnas
+	//PORTD para salida, filas
+	
+	DDRB &= ~KEYPAD_ROW_MASK;		//Pines B como entrada
+	PORTB |= KEYPAD_ROW_MASK;			//1001 1001 - Pull Up de pines B
+	
+	DDRD |= KEYPAD_COL_MASK;			//Pines D como salida
+	PORTD |= KEYPAD_COL_MASK;			//00111100	- Salidas en HIGH
 }
 
-void keypad_simulate_key(char new_key)
+uint8_t KEYPAD_scan (uint8_t *pkey)
 {
-	simulated_key = new_key;
+	static uint8_t Old_key, Last_valid_key=KEYPAD_NO_KEY; // no hay tecla presionada;
+	uint8_t Key;
+	Key= KEYPAD_actualizar();
+	
+	if(Key==KEYPAD_NO_KEY){
+		Old_key=KEYPAD_NO_KEY; // no hay tecla presionada
+		Last_valid_key=KEYPAD_NO_KEY;
+		return 0;
+	}
+	if(Key==Old_key) { //2da verificaci�n
+		if(Key!=Last_valid_key){ //evita m�ltiple detecci�n
+			*pkey=Key;
+			Last_valid_key = Key;
+			return 1;
+		}
+	}
+	Old_key=Key; //1era verificaci�n
+	return 0;
 }
 
-void keypad_read(char *key)
-{
-	*key = simulated_key;
+/*=====[Implementations of private functions]=======================*/
+static uint8_t KEYPAD_actualizar(){ 
+	 uint8_t r,c;
+	for(c=0; c<4; c++){
+		// Pone la fila c en LOW, las dem�s en HIGH
+		PORTD = (PORTD | KEYPAD_COL_MASK) & ~KEYPAD_columnas[c];
+		_delay_us(1);
 
-	/* consumir tecla */
-	simulated_key = 0;
+		for(r=0; r<4; r++){
+			if(!(PINB & KEYPAD_filas[r])){
+				return KEYPAD_map[r][c]; //Devuelve el caracter correcto seg�n el mapeo de teclas
+			}
+		}
+	}
+	return KEYPAD_NO_KEY;
 }

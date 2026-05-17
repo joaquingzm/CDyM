@@ -1,11 +1,52 @@
-#ifndef _LCD_H_
-#define _LCD_H_
 
-void lcd_init(void);
-void lcd_clear(void);
-void lcd_write_string(const char *str);
+/***********************************************************************
+* Archivo: lcd_microwave.h
+* Descripci�n:
+*   Implementaci�n del LCD del horno microondas.
+*
+***********************************************************************/
 
-/* testing */
-const char* lcd_get_content(void);
+/*=====[Avoid multiple inclusion - begin]===========================*/
+#ifndef _LCD_MICROWAVE_H_
+#define _LCD_MICROWAVE_H_
 
-#endif
+/*=====[Inclusions of public function dependencies]=================*/
+#include <stdint.h>
+
+/*=====[Definition macros of public constants]======================*/
+
+/*=====[Prototypes (declarations) of public functions]==============*/
+
+/**
+ * @brief   Muestra mensaje en segunda fila LCD.
+ *
+ * @param	string de mensaje y sizeof mensaje 
+ *
+ * @note    Muestra nn:nn en pantalla.
+ *          Debe llamarse antes de iniciar el conteo.
+ */
+void LCD_state_msg(uint8_t *text, uint8_t size);
+
+/**
+ * @brief   Imprime caracter de carga. 
+ *
+ * @note    Alterna entre caracteres para simular carga.
+ */
+void LCD_loading()
+
+/**
+ * @brief   Inicializa LCD.
+ *
+ * @note    Debe llamarse antes de utilizar el LCD.
+ */
+void LCD_Setup_Begin(void);
+
+/**
+ * @brief   Alterna el encendido del display LCD.
+ *
+ * @note    Llamar una vez para encender y otra vez para apagar.
+ */
+void LCD_flash(void);
+
+/*=====[Avoid multiple inclusion - end]=============================*/
+#endif /* _LCD_MICROWAVE_H_ */

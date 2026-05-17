@@ -17,7 +17,7 @@ void timer_init(void){
 /*====[Implementations of private functions]=====================*/
 ISR (TIMER0_COMPA_vect){
 	static uint8_t count = 0;
-	if (++count >= 100){
+	if (++count >= 10){
 		count = 0;
 		FLAG_TIMER = 1;
 	}
