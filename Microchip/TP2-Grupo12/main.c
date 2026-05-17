@@ -6,7 +6,7 @@
 #include "timer.h"
 
 int main(void)
-{
+{	
 	timer_init();
 	KEYPAD_init();
 	LCD_Setup_Begin();

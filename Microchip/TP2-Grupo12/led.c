@@ -16,8 +16,8 @@ void led_init(void){
 }
 
 /***********************************************************************
-* Propósito:
-*   Enciende LED del magnetrón.
+* Prop?sito:
+*   Enciende LED del magnetr?n.
 ***********************************************************************/
 void led_magnetron_on(void)
 {
@@ -25,8 +25,8 @@ void led_magnetron_on(void)
 }
 
 /***********************************************************************
-* Propósito:
-*   Apaga LED del magnetrón.
+* Prop?sito:
+*   Apaga LED del magnetr?n.
 ***********************************************************************/
 void led_magnetron_off(void)
 {
@@ -34,7 +34,7 @@ void led_magnetron_off(void)
 }
 
 /***********************************************************************
-* Propósito:
+* Prop?sito:
 *   Enciende LED de luz interior.
 ***********************************************************************/
 void led_light_on(void)
@@ -43,7 +43,7 @@ void led_light_on(void)
 }
 
 /***********************************************************************
-* Propósito:
+* Prop?sito:
 *   Apaga LED de luz interior.
 ***********************************************************************/
 void led_light_off(void)
@@ -52,7 +52,7 @@ void led_light_off(void)
 }
 
 /***********************************************************************
-* Propósito:
+* Prop?sito:
 *   Enciende LED de alarma.
 ***********************************************************************/
 void led_alarm_on(void)
@@ -61,7 +61,7 @@ void led_alarm_on(void)
 }
 
 /***********************************************************************
-* Propósito:
+* Prop?sito:
 *   Apaga LED de alarma.
 ***********************************************************************/
 void led_alarm_off(void)

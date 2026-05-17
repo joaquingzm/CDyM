@@ -5,12 +5,13 @@
 /*=====[Inclusions of private function dependencies]================*/
 #include "lcd.h"
 
-/*=====[Definition macros of private constants]=====================*/
-
 /*=====[Definitions of private global variables]====================*/
 static uint8_t display_visible=1;
 static uint8_t loading[] = {' ','.','o','O','o','.'};
 static uint8_t i =0;
+
+/*=====[Prototypes (declarations) of private functions]=============*/
+
 
 /*=====[Implementations of public functions]========================*/
 void LCD_state_msg(uint8_t *text, uint8_t size){
@@ -27,6 +28,7 @@ void LCD_loading(void){
 	if(i==6)i=0;
 }
 
+
 void LCD_Setup_Begin(){
 	LCD_Init();
 }
@@ -35,10 +37,9 @@ void LCD_flash(){
 	if (display_visible) {
 		LCDblank();
 		display_visible=0;
-	}else{ 
+		}else{
 		LCDvisible();
 		display_visible=1;
 	}
 }
-
 

@@ -1,6 +1,6 @@
 /*====[Inclusion of own header]==================================*/
 #include "microwave.h"
- 
+
 /*====[Inclusion of private function dependencies]===============*/
 #include "keypad4x4.h"
 #include "lcd_microwave.h"
@@ -18,9 +18,7 @@ static uint8_t door_open;
 static uint8_t new_state;
 static char key;
 static uint8_t cooking_state[] = "COOKING";
-static uint8_t paused_state[] = "PAUSED";
-static uint8_t idle_state[] = "Tiempo de cocci�n";
-static uint8_t finished_state[] = "FINISHED";
+static uint8_t idle_state[] = "Tiempo de cocci?n";
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
 static void microwave_state_cooking(void);
@@ -53,6 +51,7 @@ void microwave_init(){
 	new_state = 1u;
 	key = 0;
 
+	//LCDclr();
 	led_init();
 	LCD_Setup_Begin();
 	microwave_show_time(0u);
@@ -65,7 +64,7 @@ void microwave_update(){
 	if (hay_tecla){
 		if (key == 'D'){
 			door_open = (uint8_t)!door_open;
-		}	
+		}
 	}
 	
 
@@ -78,6 +77,7 @@ static void microwave_state_idle(void)
 	if (new_state)
 	{
 		led_alarm_off();
+		//LCDclr(); // Esto se hace solo una vez en el modo idle? o siempre? podr?a implementar cartel "Introduzca ..."
 		LCD_state_msg(idle_state,sizeof(idle_state));
 		microwave_show_time(cooking_time);
 		new_state = 0u;
@@ -111,8 +111,8 @@ static void microwave_state_cooking(void)
 {
 	if (new_state)
 	{
+		//LCDclr();
 		LCD_state_msg(cooking_state,sizeof(cooking_state));
-		LCD_loading();
 		microwave_show_time(cooking_time);
 		new_state = 0u;
 		state_call_count = 0u;
@@ -165,7 +165,8 @@ static void microwave_state_paused(void)
 {
 	if (new_state)
 	{
-		LCD_state_msg(paused_state,sizeof(paused_state));
+		LCDclr();
+		LCDstring("PAUSED",6);
 		new_state = 0u;
 		state_call_count = 0u;
 
@@ -198,7 +199,10 @@ static void microwave_state_finished(void)
 {
 	if (new_state)
 	{
-		LCD_state_msg(finished_state,sizeof(finished_state));
+		LCDclr();
+		LCDstring("** FINISHED **",14);
+		//LCD_finished();
+
 		new_state = 0u;
 		state_call_count = 0u;
 		blink_count = 0u;
@@ -214,12 +218,14 @@ static void microwave_state_finished(void)
 		blink_count = 0u;
 		blink_flag = (uint8_t)!blink_flag;
 
-		LCD_flash();
+		LCDclr();
+		//LCD_flash();
 		led_alarm_off();
 		if (blink_flag)
 		{
 			led_alarm_on();
-			LCD_flash();
+			LCDstring("** FINISHED **",14);
+			//LCD_flash();
 		}
 	}
 	/* 5 segundos totales -> 50 llamadas de 100 ms */
@@ -253,7 +259,7 @@ static void microwave_add_digit(uint8_t digit)
 	{
 		return;
 	}
-	/* desplaza el n�mero MMSS e incorpora el nuevo d�gito */
+	/* desplaza el n?mero MMSS e incorpora el nuevo d?gito */
 	typed_mmss = (uint16_t)((typed_mmss % 1000u) * 10u + digit);
 	cooking_time = microwave_mmss_to_seconds(typed_mmss);
 	microwave_show_time(cooking_time);
@@ -280,7 +286,7 @@ static void microwave_show_time(uint16_t seconds)
 	uint16_t secs;
 	if (seconds > 5999u)
 	{
-		seconds = 5999u; /* l�mite 99:59 */
+		seconds = 5999u; /* l?mite 99:59 */
 	}
 	minutes = seconds / 60u;
 	secs = seconds % 60u;

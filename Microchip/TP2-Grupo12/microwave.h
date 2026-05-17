@@ -1,7 +1,7 @@
 /***********************************************************************
 * Archivo: microwave.h
-* Descripción:
-*   Implementación de la MEF del horno microondas.
+* Descripci?n:
+*   Implementaci?n de la MEF del horno microondas.
 *
 ***********************************************************************/
 
@@ -11,32 +11,32 @@
 
 /*====[Definitions of public data types]=========================*/
 typedef enum {IDLE, COOKING, FINISHED, PAUSED} microwave_state_t;
-	
+
 /*====[Prototypes (declarations) of public functions]============*/
 /***********************************************************************
-* Propósito de la función: 
+* Prop?sito de la funci?n:
 *	Inicializa  el modulo del horno de microondas.
 *
-* Parámetros de entrada (tipo, rango y formato) : 
+* Par?metros de entrada (tipo, rango y formato) :
 *	Ninguno.
 *
-* Parámetros de salida (tipo, rango y formato) : 
+* Par?metros de salida (tipo, rango y formato) :
 *	Ninguno.
 *
-* Otros comentarios: 
-*	Debe ejecutarse una única vez al inicio del sistema
+* Otros comentarios:
+*	Debe ejecutarse una ?nica vez al inicio del sistema
 ***********************************************************************/
 void microwave_init(void);
 
 /***********************************************************************
-* Propósito de la función:
+* Prop?sito de la funci?n:
 *	Indica al modulo del horno de microondas que lea las entradas
 *	y correspondiente a su estado actual, cambie o no de estado.
 *
-* Parámetros de entrada (tipo, rango y formato) :
+* Par?metros de entrada (tipo, rango y formato) :
 *	Ninguno.
 *
-* Parámetros de salida (tipo, rango y formato) :
+* Par?metros de salida (tipo, rango y formato) :
 *	Ninguno.
 *
 * Otros comentarios:

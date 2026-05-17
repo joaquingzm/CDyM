@@ -10,11 +10,6 @@
 /*=====[Definition macros of public constants]======================*/
 #define KEYPAD_NO_KEY   0xFF
 
-/*=====[Inclusions of public function dependencies]=================*/
-#include <avr/io.h>
-#include <stdint.h>
-
-
 /*=====[Prototypes (declarations) of public functions]==============*/
 
 /**
@@ -22,21 +17,20 @@
  *
  * @note    PORTB como entradas (filas) con pull-up activado.
  *          PORTD como salidas (columnas) en HIGH.
- *          Debe llamarse antes de cualquier otra función del módulo.
+ *          Debe llamarse antes de cualquier otra funci?n del m?dulo.
  */
 void KEYPAD_init(void);
 
 /**
  * @brief   Escanea el teclado y detecta una nueva tecla presionada.
- *          Tiene doble verificación y evita múltiple detección.
+ *          Tiene doble verificaci?n y evita m?ltiple detecci?n.
  *
  * @param   pkey    Puntero donde se almacena la tecla detectada (0-15).
  *
- * @return  1       Si hay una nueva tecla presionada. El valor está en *pkey.
+ * @return  1       Si hay una nueva tecla presionada. El valor est? en *pkey.
  * @return  0       Si no hay nueva tecla presionada.
  */
 uint8_t KEYPAD_scan(uint8_t *pkey);
 
 /*=====[Avoid multiple inclusion - end]=============================*/
 #endif /* _KEYPAD_H_ */
-

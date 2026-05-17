@@ -1,8 +1,8 @@
 
 /***********************************************************************
 * Archivo: lcd_microwave.h
-* Descripci�n:
-*   Implementaci�n del LCD del horno microondas.
+* Descripci?n:
+*   Implementaci?n del LCD del horno microondas.
 *
 ***********************************************************************/
 
@@ -28,11 +28,14 @@
 void LCD_state_msg(uint8_t *text, uint8_t size);
 
 /**
- * @brief   Imprime caracter de carga. 
+ * @brief   Muestra mensaje en segunda fila LCD.
  *
- * @note    Alterna entre caracteres para simular carga.
+ * @param	string de mensaje y sizeof mensaje 
+ *
+ * @note    Muestra nn:nn en pantalla.
+ *          Debe llamarse antes de iniciar el conteo.
  */
-void LCD_loading()
+void LCD_loading();
 
 /**
  * @brief   Inicializa LCD.
@@ -42,9 +45,8 @@ void LCD_loading()
 void LCD_Setup_Begin(void);
 
 /**
- * @brief   Alterna el encendido del display LCD.
+ * @brief   Alterna el display en encendido y apagado.
  *
- * @note    Llamar una vez para encender y otra vez para apagar.
  */
 void LCD_flash(void);
 
