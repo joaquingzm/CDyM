@@ -1,20 +1,8 @@
-<<<<<<< HEAD
-#ifndef _LCD_H_
-#define _LCD_H_
 
-void lcd_init(void);
-void lcd_clear(void);
-void lcd_write_string(const char *str);
-
-/* testing */
-const char* lcd_get_content(void);
-
-#endif
-=======
 /***********************************************************************
 * Archivo: lcd_microwave.h
-* Descripción:
-*   Implementación del LCD del horno microondas.
+* Descripciï¿½n:
+*   Implementaciï¿½n del LCD del horno microondas.
 *
 ***********************************************************************/
 
@@ -50,9 +38,9 @@ void LCD_state_msg(uint8_t *text, uint8_t size);
 void LCD_loading()
 
 /**
- * @brief   Setear tiempo de cocción de microondas.
+ * @brief   Setear tiempo de cocciï¿½n de microondas.
  *
- * @param	n Numero válido de la forma 2400 = 24:00
+ * @param	n Numero vï¿½lido de la forma 2400 = 24:00
  *
  * @note    Muestra nn:nn en pantalla.
  *          Debe llamarse antes de iniciar el conteo.
@@ -61,13 +49,13 @@ void LCD_Start_Setup(uint16_t time);
 /**
  * @brief   Actualiza LCD solo si hubo flanco de reloj.
  *
- * @note    Cada iteración verifica el conteo
+ * @note    Cada iteraciï¿½n verifica el conteo
  */
 void LCD_Start_Refresh(void);
 /**
  * @brief   Actualiza tiempo de microondas desde segundos a minutos.
  *
- * @param	n Numero válido de 0-9 para agregar al tiempo
+ * @param	n Numero vï¿½lido de 0-9 para agregar al tiempo
  *
  * @note    Muestra nn:nn en pantalla.
  *          Debe llamarse al presionarse una tecla del keypad.
@@ -90,4 +78,3 @@ void LCD_Setup_Begin(void);
 
 /*=====[Avoid multiple inclusion - end]=============================*/
 #endif /* _LCD_MICROWAVE_H_ */
->>>>>>> 21ddb75 (LCD header y source)

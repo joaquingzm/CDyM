@@ -1,15 +1,4 @@
-<<<<<<< HEAD
-#ifndef _KEYPAD4X4_H_
-#define _KEYPAD4X4_H_
 
-void keypad_init(void);
-void keypad_read(char *key);
-
-/* solo para testing */
-void keypad_simulate_key(char new_key);
-
-#endif
-=======
 /*=====[Avoid multiple inclusion - begin]===========================*/
 #ifndef _KEYPAD_H_
 #define _KEYPAD_H_
@@ -20,6 +9,11 @@ void keypad_simulate_key(char new_key);
 
 /*=====[Definition macros of public constants]======================*/
 #define KEYPAD_NO_KEY   0xFF
+
+/*=====[Inclusions of public function dependencies]=================*/
+#include <avr/io.h>
+#include <stdint.h>
+
 
 /*=====[Prototypes (declarations) of public functions]==============*/
 
@@ -45,4 +39,4 @@ uint8_t KEYPAD_scan(uint8_t *pkey);
 
 /*=====[Avoid multiple inclusion - end]=============================*/
 #endif /* _KEYPAD_H_ */
->>>>>>> 80bd31c (Keypad header y source modularizado y comentado)
+
