@@ -19,7 +19,7 @@ static uint8_t new_state;
 static char key;
 static uint8_t cooking_state[] = "COOKING";
 static uint8_t paused_state[] = "PAUSED";
-static uint8_t idle_state[] = "Tiempo de cocción";
+static uint8_t idle_state[] = "Tiempo de cocciï¿½n";
 static uint8_t finished_state[] = "FINISHED";
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
@@ -53,7 +53,6 @@ void microwave_init(){
 	new_state = 1u;
 	key = 0;
 
-	//LCDclr();
 	led_init();
 	LCD_Setup_Begin();
 	microwave_show_time(0u);
@@ -79,7 +78,6 @@ static void microwave_state_idle(void)
 	if (new_state)
 	{
 		led_alarm_off();
-		//LCDclr(); // Esto se hace solo una vez en el modo idle? o siempre? podría implementar cartel "Introduzca ..."
 		LCD_state_msg(idle_state,sizeof(idle_state));
 		microwave_show_time(cooking_time);
 		new_state = 0u;
@@ -113,7 +111,6 @@ static void microwave_state_cooking(void)
 {
 	if (new_state)
 	{
-		//LCDclr();
 		LCD_state_msg(cooking_state,sizeof(cooking_state));
 		LCD_loading();
 		microwave_show_time(cooking_time);
@@ -202,8 +199,6 @@ static void microwave_state_finished(void)
 	if (new_state)
 	{
 		LCD_state_msg(finished_state,sizeof(finished_state));
-		//LCD_finished();
-
 		new_state = 0u;
 		state_call_count = 0u;
 		blink_count = 0u;
@@ -258,7 +253,7 @@ static void microwave_add_digit(uint8_t digit)
 	{
 		return;
 	}
-	/* desplaza el número MMSS e incorpora el nuevo dígito */
+	/* desplaza el nï¿½mero MMSS e incorpora el nuevo dï¿½gito */
 	typed_mmss = (uint16_t)((typed_mmss % 1000u) * 10u + digit);
 	cooking_time = microwave_mmss_to_seconds(typed_mmss);
 	microwave_show_time(cooking_time);
@@ -285,7 +280,7 @@ static void microwave_show_time(uint16_t seconds)
 	uint16_t secs;
 	if (seconds > 5999u)
 	{
-		seconds = 5999u; /* límite 99:59 */
+		seconds = 5999u; /* lï¿½mite 99:59 */
 	}
 	minutes = seconds / 60u;
 	secs = seconds % 60u;

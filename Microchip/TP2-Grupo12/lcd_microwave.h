@@ -28,46 +28,11 @@
 void LCD_state_msg(uint8_t *text, uint8_t size);
 
 /**
- * @brief   Muestra mensaje en segunda fila LCD.
+ * @brief   Imprime caracter de carga. 
  *
- * @param	string de mensaje y sizeof mensaje 
- *
- * @note    Muestra nn:nn en pantalla.
- *          Debe llamarse antes de iniciar el conteo.
+ * @note    Alterna entre caracteres para simular carga.
  */
 void LCD_loading()
-
-/**
- * @brief   Setear tiempo de cocci�n de microondas.
- *
- * @param	n Numero v�lido de la forma 2400 = 24:00
- *
- * @note    Muestra nn:nn en pantalla.
- *          Debe llamarse antes de iniciar el conteo.
- */
-void LCD_Start_Setup(uint16_t time);
-/**
- * @brief   Actualiza LCD solo si hubo flanco de reloj.
- *
- * @note    Cada iteraci�n verifica el conteo
- */
-void LCD_Start_Refresh(void);
-/**
- * @brief   Actualiza tiempo de microondas desde segundos a minutos.
- *
- * @param	n Numero v�lido de 0-9 para agregar al tiempo
- *
- * @note    Muestra nn:nn en pantalla.
- *          Debe llamarse al presionarse una tecla del keypad.
- */
-void LCD_Reposo_Refresh(uint8_t n);
-/**
- * @brief   Inicializa LCD para el estado de reposo.
- *
- * @note    Muestra 00:00 en pantalla.
- *          Debe llamarse al pasar al estado de reposo.
- */
-void LCD_Reposo_Setup(void);
 
 /**
  * @brief   Inicializa LCD.
@@ -75,6 +40,13 @@ void LCD_Reposo_Setup(void);
  * @note    Debe llamarse antes de utilizar el LCD.
  */
 void LCD_Setup_Begin(void);
+
+/**
+ * @brief   Alterna el encendido del display LCD.
+ *
+ * @note    Llamar una vez para encender y otra vez para apagar.
+ */
+void LCD_flash(void);
 
 /*=====[Avoid multiple inclusion - end]=============================*/
 #endif /* _LCD_MICROWAVE_H_ */
