@@ -9,8 +9,8 @@
 
 /*====[Definitions of private global variables]==================*/
 static microwave_state_t state;
-static uint16_t cooking_time;
-static uint16_t typed_mmss;
+static uint8_t cooking_time_m;
+static uint8_t cooking_time_s;
 static uint16_t blink_count;
 static uint16_t state_call_count;
 static uint8_t blink_flag;
@@ -25,8 +25,10 @@ static void microwave_state_cooking(void);
 static void microwave_state_paused(void);
 static void microwave_state_finished(void);
 
-static void microwave_show_time(uint16_t seconds);
+static void microwave_show_time(void);
 static void microwave_add_digit(uint8_t digit);
+static void microwave_decrease_cooking_time();
+static void microwave_increase_cooking_time(uint8_t secs_to_inc);
 static void microwave_clear_time(void);
 static uint16_t microwave_seconds_to_mmss(uint16_t seconds);
 static uint16_t microwave_mmss_to_seconds(uint16_t mmss);
@@ -42,19 +44,17 @@ static void (*microwave[])(void)=
 /*====[Implemenations of public functions]=======================*/
 void microwave_init(){
 	state = IDLE;
-	cooking_time = 0u;
-	typed_mmss = 0u;
+	cooking_time_m = 0u;
+	cooking_time_s = 0u;
 	blink_count = 0u;
 	state_call_count = 0u;
 	blink_flag = 0u;
 	door_open = 0u;
 	new_state = 1u;
 	key = 0;
-
-	//LCDclr();
 	led_init();
 	LCD_Setup_Begin();
-	microwave_show_time(0u);
+	microwave_show_time();
 }
 
 void microwave_update(){
@@ -66,8 +66,6 @@ void microwave_update(){
 			door_open = (uint8_t)!door_open;
 		}
 	}
-	
-
 	microwave[state]();
 }
 
@@ -79,7 +77,7 @@ static void microwave_state_idle(void)
 		led_alarm_off();
 		//LCDclr(); // Esto se hace solo una vez en el modo idle? o siempre? podr?a implementar cartel "Introduzca ..."
 		LCD_state_msg(idle_state,sizeof(idle_state));
-		microwave_show_time(cooking_time);
+		microwave_show_time();
 		new_state = 0u;
 	}
 
@@ -93,11 +91,10 @@ static void microwave_state_idle(void)
 	}
 	else if (key == 'C')
 	{
-		cooking_time += 30u;
-		typed_mmss = microwave_seconds_to_mmss(cooking_time);
-		microwave_show_time(cooking_time);
+		microwave_increase_cooking_time(30u);
+		microwave_show_time();
 	}
-	else if ((key == 'A') && (cooking_time > 0u) && (door_open == 0u))
+	else if ((key == 'A') && (cooking_time_s > 0u || cooking_time_m > 0u) && (door_open == 0u))
 	{
 		state = COOKING;
 		new_state = 1u;
@@ -113,7 +110,9 @@ static void microwave_state_cooking(void)
 	{
 		//LCDclr();
 		LCD_state_msg(cooking_state,sizeof(cooking_state));
-		microwave_show_time(cooking_time);
+
+		LCD_loading();
+		microwave_show_time();
 		new_state = 0u;
 		state_call_count = 0u;
 		blink_count = 0u;
@@ -131,9 +130,8 @@ static void microwave_state_cooking(void)
 	}
 	if (key == 'C')
 	{
-		cooking_time += 30u;
-		typed_mmss = microwave_seconds_to_mmss(cooking_time);
-		microwave_show_time(cooking_time);
+		microwave_increase_cooking_time(30u);
+		microwave_show_time();
 	}
 	/* Cada 10 llamadas = 1 segundo, si update corre cada 100 ms */
 	state_call_count++;
@@ -141,15 +139,14 @@ static void microwave_state_cooking(void)
 	{
 		state_call_count = 0u;
 
-		if (cooking_time > 0u)
+		if (cooking_time_s > 0u || cooking_time_m > 0u)
 		{
-			cooking_time--;
-			typed_mmss = microwave_seconds_to_mmss(cooking_time);
-			microwave_show_time(cooking_time);
+			microwave_decrease_cooking_time();
+			microwave_show_time();
 			LCD_loading();
 		}
 
-		if (cooking_time == 0u)
+		if (cooking_time_s == 0u && cooking_time_m == 0u)
 		{
 			state = FINISHED;
 			new_state = 1u;
@@ -180,7 +177,7 @@ static void microwave_state_paused(void)
 		new_state = 1u;
 		return;
 	}
-	if ((key == 'A') && (cooking_time > 0u) && (door_open == 0u))
+	if ((key == 'A') && (cooking_time_m > 0u || cooking_time_s > 0u) && (door_open == 0u))
 	{
 		state = COOKING;
 		new_state = 1u;
@@ -189,9 +186,8 @@ static void microwave_state_paused(void)
 	}
 	if (key == 'C')
 	{
-		cooking_time += 30u;
-		typed_mmss = microwave_seconds_to_mmss(cooking_time);
-		microwave_show_time(cooking_time);
+		microwave_increase_cooking_time(30u);
+		microwave_show_time();
 	}
 }
 
@@ -232,8 +228,8 @@ static void microwave_state_finished(void)
 	state_call_count++;
 	if (state_call_count >= 50u)
 	{
-		cooking_time = 0u;
-		typed_mmss = 0u;
+		cooking_time_s = 0u;
+		cooking_time_m = 0u;
 		state = IDLE;
 		new_state = 1u;
 		state_call_count = 0u;
@@ -245,12 +241,12 @@ static void microwave_state_finished(void)
 
 static void microwave_clear_time(void)
 {
-	cooking_time = 0u;
-	typed_mmss = 0u;
+	cooking_time_s = 0u;
+	cooking_time_m = 0u;
 	state_call_count = 0u;
 	blink_count = 0u;
 	blink_flag = 0u;
-	microwave_show_time(0u);
+	microwave_show_time();
 }
 
 static void microwave_add_digit(uint8_t digit)
@@ -259,43 +255,54 @@ static void microwave_add_digit(uint8_t digit)
 	{
 		return;
 	}
-	/* desplaza el n?mero MMSS e incorpora el nuevo d?gito */
-	typed_mmss = (uint16_t)((typed_mmss % 1000u) * 10u + digit);
-	cooking_time = microwave_mmss_to_seconds(typed_mmss);
-	microwave_show_time(cooking_time);
+	cooking_time_m = (uint8_t)((cooking_time_m*10u)%100u + cooking_time_s/10u);
+	cooking_time_s = (uint8_t)((cooking_time_s*10u)%100u + digit);
+	microwave_show_time();
 }
 
-static uint16_t microwave_mmss_to_seconds(uint16_t mmss)
+static void microwave_decrease_cooking_time()
 {
-	uint16_t minutes = mmss / 100u;
-	uint16_t seconds = mmss % 100u;
-	return (uint16_t)(minutes * 60u + seconds);
+	if (cooking_time_s > 0u)
+	{
+		cooking_time_s--;
+	}
+	else if (cooking_time_m > 0u)
+	{
+		cooking_time_m--;
+		cooking_time_s = 59;
+	}
+	else
+	{
+		// ya en 00:00
+	}
 }
 
-static uint16_t microwave_seconds_to_mmss(uint16_t seconds)
+static void microwave_increase_cooking_time(uint8_t secs_to_inc)
 {
-	uint16_t minutes = seconds / 60u;
-	uint16_t secs = seconds % 60u;
-	return (uint16_t)(minutes * 100u + secs);
+	cooking_time_s = cooking_time_s + secs_to_inc;
+	if (cooking_time_s > 59u)
+	{
+		if (cooking_time_m < 99u)
+		{
+			cooking_time_s = cooking_time_s % 60;
+			cooking_time_m++;
+		}
+		else 
+		{
+			cooking_time_s = 59u;
+		}
+	}
 }
 
-static void microwave_show_time(uint16_t seconds)
+static void microwave_show_time(void)
 {
 	char buffer[6];
-	uint16_t minutes;
-	uint16_t secs;
-	if (seconds > 5999u)
-	{
-		seconds = 5999u; /* l?mite 99:59 */
-	}
-	minutes = seconds / 60u;
-	secs = seconds % 60u;
 
-	buffer[0] = (char)('0' + ((minutes / 10u) % 10u));
-	buffer[1] = (char)('0' + (minutes % 10u));
+	buffer[0] = (char)('0' + ((cooking_time_m/ 10u) % 10u));
+	buffer[1] = (char)('0' + (cooking_time_m % 10u));
 	buffer[2] = ':';
-	buffer[3] = (char)('0' + (secs / 10u));
-	buffer[4] = (char)('0' + (secs % 10u));
+	buffer[3] = (char)('0' + (cooking_time_s / 10u));
+	buffer[4] = (char)('0' + (cooking_time_s % 10u));
 	buffer[5] = '\0';
 
 	LCDGotoXY(0,0);
