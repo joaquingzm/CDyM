@@ -17,13 +17,21 @@
 
 /*=====[Prototypes (declarations) of public functions]==============*/
 
+
+/**
+ * @brief   Muestra mensaje de tiempo en primera fila LCD.
+ *
+ * @param	string de mensaje y sizeof mensaje 
+ *
+ * @note    Muestra nn:nn en pantalla.
+ */
+void LCD_time_msg(uint8_t *time, uint8_t size);
 /**
  * @brief   Muestra mensaje en segunda fila LCD.
  *
  * @param	string de mensaje y sizeof mensaje 
  *
- * @note    Muestra nn:nn en pantalla.
- *          Debe llamarse antes de iniciar el conteo.
+ * @note    Muestra mensaje de estado en pantalla.
  */
 void LCD_state_msg(uint8_t *text, uint8_t size);
 

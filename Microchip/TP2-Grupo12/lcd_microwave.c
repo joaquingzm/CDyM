@@ -14,6 +14,12 @@ static uint8_t i =0;
 
 
 /*=====[Implementations of public functions]========================*/
+void LCD_time_msg(uint8_t *time, uint8_t size){
+	LCDGotoXY(0,0);
+	LCDstring(time,size-1);
+	LCDGotoXY(0,0);
+}
+
 void LCD_state_msg(uint8_t *text, uint8_t size){
 	LCDclr();
 	LCDGotoXY(0,1);

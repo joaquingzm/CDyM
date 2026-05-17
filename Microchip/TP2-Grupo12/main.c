@@ -5,6 +5,7 @@
 #include <util/delay.h>
 #include "timer.h"
 
+
 int main(void)
 {	
 	timer_init();
