@@ -3,13 +3,18 @@
 #include "microwave.h"
 #include "lcd_microwave.h"
 #include <util/delay.h>
-//#include "timer.h"
+#include "timer.h"
 
 int main(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
+=======
+>>>>>>> ab983e6 (Ultimo commit de la night)
 	timer_init();
+	KEYPAD_init();
+	LCD_Setup_Begin();
     microwave_init();
     while (1) 
     {
@@ -17,6 +22,7 @@ int main(void)
 			microwave_update();
 			FLAG_TIMER = 0;
 		}
+<<<<<<< HEAD
     }
 	*/
 	 KEYPAD_init();
@@ -51,7 +57,12 @@ int main(void)
 */
 
 	 while(1) {
+=======
+		
+	/*	
+>>>>>>> ab983e6 (Ultimo commit de la night)
 		microwave_update();
-		_delay_ms(10);     // imita el tick del timer a 100ms
-	 }
+		_delay_ms(5);
+		*/
+    }
 }

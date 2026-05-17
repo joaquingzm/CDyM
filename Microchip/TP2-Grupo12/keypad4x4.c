@@ -110,7 +110,6 @@ static uint8_t KEYPAD_actualizar(){ // Devuelve la posición del boton desde 0-15
 
 		for(r=0; r<4; r++){
 			if(!(PINB & KEYPAD_filas[r])){
-				//return (r*4 + c);
 				return KEYPAD_map[r][c];
 			}
 		}
