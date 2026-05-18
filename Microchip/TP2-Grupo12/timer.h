@@ -3,15 +3,8 @@
  * @brief   
  *
  * @details
- * Provee funciones para inicializar y controlar
- * 
- *
- * 
- *
- * 
- * 
- * 
- *
+ * Este módulo provee las funciones necesarias para inicializar
+ * y controlar el timer utilizado como base temporal del sistema.
  */
 /*====[Avoid multiple inclusion - begin]=========================*/
 #ifndef _TIMER_

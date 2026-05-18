@@ -9,8 +9,6 @@
 int main(void)
 {	
 	timer_init();
-	KEYPAD_init();
-	LCD_Setup_Begin();
     microwave_init();
     while (1) 
     {

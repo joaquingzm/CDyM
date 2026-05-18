@@ -56,6 +56,7 @@ void microwave_init(){
 	door_open = 0u;
 	new_state = 1u;
 	key = 0;
+	KEYPAD_init();
 	led_init();
 	LCD_Setup_Begin();
 	microwave_show_time();
@@ -82,6 +83,12 @@ static void microwave_state_idle(void)
 		LCD_state_msg(idle_state,sizeof(idle_state));
 		microwave_show_time();
 		new_state = 0u;
+		state_call_count = 0u;
+		blink_count = 0u;
+		alarm_flag = 0u;
+		cooking_time_s = 0u;
+		cooking_time_m = 0u;
+		
 	}
 
 	if (key >= '0' && key <= '9')
@@ -100,9 +107,6 @@ static void microwave_state_idle(void)
 		}
 		state = COOKING;
 		new_state = 1u;
-		state_call_count = 0u;
-		blink_count = 0u;
-		alarm_flag = 0u;
 	}
 }
 
@@ -151,9 +155,6 @@ static void microwave_state_cooking(void)
 		{
 			state = FINISHED;
 			new_state = 1u;
-			state_call_count = 0u;
-			blink_count = 0u;
-			alarm_flag = 0u;
 			return;
 		}
 	}
@@ -184,7 +185,6 @@ static void microwave_state_paused(void)
 		{
 			state = COOKING;
 			new_state = 1u;
-			state_call_count = 0u;
 			return;
 		}
 		if (key == 'C')
@@ -227,13 +227,8 @@ static void microwave_state_finished(void)
 	state_call_count++;
 	if (state_call_count >= 50u)
 	{
-		cooking_time_s = 0u;
-		cooking_time_m = 0u;
 		state = IDLE;
 		new_state = 1u;
-		state_call_count = 0u;
-		blink_count = 0u;
-		alarm_flag = 0u;
 		return;
 	}
 }
