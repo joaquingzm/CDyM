@@ -11,7 +11,7 @@
 
 /*=====[Definitions of private global variables]====================*/
 static uint8_t display_visible=1;
-static uint8_t loading[] = {' ','.','o','O','o','.'};
+static uint8_t loading[] = {' ','_','o','O','o','_'};
 static uint8_t i =0;
 
 /*=====[Prototypes (declarations) of private functions]=============*/

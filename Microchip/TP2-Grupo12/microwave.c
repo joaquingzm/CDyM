@@ -22,10 +22,10 @@ static uint8_t alarm_flag;
 static uint8_t door_open;
 static uint8_t new_state;
 static unsigned char key;
-static uint8_t cooking_state[] = "COOKING";
-static uint8_t idle_state[] = "Tiempo de coccion";
-static uint8_t paused_state[] = "PAUSED";
-static uint8_t finished_state[] = "FINISHED";
+static uint8_t cooking_state[] = "     COOKING    ";
+static uint8_t idle_state[] = " Ingrese tiempo ";
+static uint8_t paused_state[] = "     PAUSED    ";
+static uint8_t finished_state[] = "     FINISHED   ";
 
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
