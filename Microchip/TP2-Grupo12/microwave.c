@@ -23,9 +23,9 @@ static uint8_t door_open;
 static uint8_t new_state;
 static unsigned char key;
 static uint8_t cooking_state[] = "     COOKING    ";
-static uint8_t idle_state[] = " Ingrese tiempo ";
+static uint8_t idle_state[] = "   ENTER TIME ";
 static uint8_t paused_state[] = "     PAUSED    ";
-static uint8_t finished_state[] = "     FINISHED   ";
+static uint8_t finished_state[] = "    FINISHED   ";
 
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
@@ -92,13 +92,12 @@ static void microwave_state_idle(void)
 	{
 		microwave_clear_time();
 	}
-	else if (key == 'C')
+	else if ((key == 'C' || ((key == 'A') && (cooking_time_s > 0u || cooking_time_m > 0u))) && (door_open == 0u))
 	{
-		microwave_increase_cooking_time(30u);
-		microwave_show_time();
-	}
-	else if ((key == 'A') && (cooking_time_s > 0u || cooking_time_m > 0u) && (door_open == 0u))
-	{
+		if (key == 'C')
+		{
+			microwave_increase_cooking_time(30u);
+		}
 		state = COOKING;
 		new_state = 1u;
 		state_call_count = 0u;
@@ -165,6 +164,7 @@ static void microwave_state_paused(void)
 	if (new_state)
 	{
 		LCD_state_msg(paused_state,sizeof(paused_state));
+		microwave_show_time();
 		new_state = 0u;
 		state_call_count = 0u;
 
@@ -180,7 +180,7 @@ static void microwave_state_paused(void)
 			new_state = 1u;
 			return;
 		}
-		if ((key == 'A') && (cooking_time_m > 0u || cooking_time_s > 0u))
+		if (key == 'A')
 		{
 			state = COOKING;
 			new_state = 1u;
