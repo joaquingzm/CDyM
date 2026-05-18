@@ -1,3 +1,8 @@
+/**
+ * @file microwave.c
+ * @brief Implementación del horno de microondas.
+ */
+
 /*====[Inclusion of own header]==================================*/
 #include "microwave.h"
 
@@ -21,18 +26,17 @@ static uint8_t cooking_state[] = "COOKING";
 static uint8_t idle_state[] = "Tiempo de coccion";
 static uint8_t paused_state[] = "PAUSED";
 static uint8_t finished_state[] = "FINISHED";
+
 /*====[Prototypes (declarations) of private functions]===========*/
 static void microwave_state_idle(void);
 static void microwave_state_cooking(void);
 static void microwave_state_paused(void);
 static void microwave_state_finished(void);
-
 static void microwave_show_time(void);
 static void microwave_add_digit(uint8_t digit);
 static void microwave_decrease_cooking_time();
 static void microwave_increase_cooking_time(uint8_t secs_to_inc);
 static void microwave_clear_time(void);
-
 static void (*microwave[])(void)=
 {
 	microwave_state_idle,
@@ -266,10 +270,10 @@ static void microwave_decrease_cooking_time()
 		cooking_time_m--;
 		cooking_time_s = 59;
 	}
-	else
+	/*else
 	{
 		// ya en 00:00
-	}
+	}*/
 }
 
 static void microwave_increase_cooking_time(uint8_t secs_to_inc)

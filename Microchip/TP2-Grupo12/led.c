@@ -1,3 +1,7 @@
+/**
+ * @file led.c
+ * @brief Implementación de leds.
+ */
 /*====[Inclusion of own header]==================================*/
 #include "led.h"
 

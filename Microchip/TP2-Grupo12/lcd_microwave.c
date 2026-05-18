@@ -1,3 +1,7 @@
+/**
+ * @file lcd_microwave.c
+ * @brief Implementación del driver LCD.
+ */
 
 /*=====[Inclusion of own header]====================================*/
 #include "lcd_microwave.h"

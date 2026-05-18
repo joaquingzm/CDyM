@@ -1,9 +1,12 @@
-/***********************************************************************
-* Archivo: microwave.h
-* Descripci?n:
-*   Implementaci?n de la MEF del horno microondas.
-*
-***********************************************************************/
+/**
+ * @file    microwave.h
+ * @brief   Implementación de la lógica de un horno de microondas.
+ *
+ * @details
+ * Provee funciones para inicializar y ejecutar
+ * ciclos de funcionamiento del horno de microondas.
+ * Debe llamarse cada 100ms para funcionar correctamente.
+ */
 
 /*====[Avoid multiple inclusion - begin]=========================*/
 #ifndef _MICROWAVE_
@@ -13,35 +16,19 @@
 typedef enum {IDLE, COOKING, FINISHED, PAUSED} microwave_state_t;
 
 /*====[Prototypes (declarations) of public functions]============*/
-/***********************************************************************
-* Prop?sito de la funci?n:
-*	Inicializa  el modulo del horno de microondas.
-*
-* Par?metros de entrada (tipo, rango y formato) :
-*	Ninguno.
-*
-* Par?metros de salida (tipo, rango y formato) :
-*	Ninguno.
-*
-* Otros comentarios:
-*	Debe ejecutarse una ?nica vez al inicio del sistema
-***********************************************************************/
+/**
+ * @brief   Inicializa variables internas del horno de microondas.
+ *
+ * @note    Debe llamarse antes de utilizar cualquier otra función.
+ */
 void microwave_init(void);
 
-/***********************************************************************
-* Prop?sito de la funci?n:
-*	Indica al modulo del horno de microondas que lea las entradas
-*	y correspondiente a su estado actual, cambie o no de estado.
-*
-* Par?metros de entrada (tipo, rango y formato) :
-*	Ninguno.
-*
-* Par?metros de salida (tipo, rango y formato) :
-*	Ninguno.
-*
-* Otros comentarios:
-*	Debe ejecutarse periodicamente a 100ms
-***********************************************************************/
+
+/**
+ * @brief   Ejecuta la lógica del microondas, leyendo el 
+ *			estado de sus entradas y cambiando su estado
+ *			en consecuencia.
+ */
 void microwave_update(void);
 
 /*====[Avvoid multiple inclusion - end]==========================*/

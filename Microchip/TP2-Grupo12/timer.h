@@ -1,10 +1,18 @@
- /***********************************************************************
-* Archivo: timer.h
-* Descripción:
-*   
-*
-***********************************************************************/
-
+/**
+ * @file    timer.h
+ * @brief   
+ *
+ * @details
+ * Provee funciones para inicializar y controlar
+ * 
+ *
+ * 
+ *
+ * 
+ * 
+ * 
+ *
+ */
 /*====[Avoid multiple inclusion - begin]=========================*/
 #ifndef _TIMER_
 #define _TIMER_

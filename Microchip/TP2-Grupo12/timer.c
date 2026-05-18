@@ -1,3 +1,7 @@
+/**
+ * @file timer.c
+ * @brief Implementación del driver para timer de tick de 10ms.
+ */
 /*====[Inclusion of own header]==================================*/
 #include "timer.h"
 

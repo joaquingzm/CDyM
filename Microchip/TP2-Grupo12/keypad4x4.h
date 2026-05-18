@@ -1,4 +1,15 @@
-
+/**
+ * @file    keypad4x4.h
+ * @brief   Driver keypad4x4.
+ *
+ * @details
+ * Provee funciones para inicializar y controlar
+ * 
+ *
+ * El módulo permite:
+ *
+ *
+ */
 /*=====[Avoid multiple inclusion - begin]===========================*/
 #ifndef _KEYPAD_H_
 #define _KEYPAD_H_
@@ -23,11 +34,11 @@ void KEYPAD_init(void);
 
 /**
  * @brief   Escanea el teclado y detecta una nueva tecla presionada.
- *          Tiene doble verificaci?n y evita m?ltiple detecci?n.
+ *          Tiene doble verificacion y evita multiple deteccion.
  *
  * @param   pkey    Puntero donde se almacena la tecla detectada (0-15).
  *
- * @return  1       Si hay una nueva tecla presionada. El valor est? en *pkey.
+ * @return  1       Si hay una nueva tecla presionada. El valor esta en *pkey.
  * @return  0       Si no hay nueva tecla presionada.
  */
 uint8_t KEYPAD_scan(uint8_t *pkey);

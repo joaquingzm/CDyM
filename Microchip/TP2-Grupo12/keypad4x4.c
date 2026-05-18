@@ -1,9 +1,10 @@
-#include "keypad4x4.h"
-
-	
+/**
+ * @file keypad4x4.c
+ * @brief Implementación de driver de keypad4x4.
+ */
 /*=====[Inclusion of own header]====================================*/
 #include "keypad4x4.h"
-
+#define F_CPU 16000000L
 /*=====[Inclusions of private function dependencies]================*/
 #include <util/delay.h>
 

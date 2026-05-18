@@ -1,9 +1,18 @@
-/***********************************************************************
-* Archivo: led.h
-* Descripci?n:
-*
-*
-***********************************************************************/
+/**
+ * @file    lede.h
+ * @brief   Driver LED.
+ *
+ * @details
+ * Provee funciones para inicializar y controlar
+ * 
+ *
+ * 
+ * 
+ * 
+ * 
+ * 
+ *
+ */
 
 /*====[Avoid multiple inclusion - begin]=========================*/
 #ifndef _LED_
