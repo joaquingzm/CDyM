@@ -10,9 +10,16 @@
 
 int main(void)
 {
+	uart_init();
+	
     /* Replace with your application code */
     while (1) 
     {
+		if(flag_salto_linea)
+		{
+			flag_salto_linea := 0;
+			terminal_task();
+		}
     }
 }
 
