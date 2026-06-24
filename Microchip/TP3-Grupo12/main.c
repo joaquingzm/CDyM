@@ -1,25 +1,20 @@
-/*
- * TP3-Grupo12.c
- *
- * Created: 6/23/2026 14:48:07
- * Author : joaqu
- */ 
+#define F_CPU 16000000UL
 
 #include <avr/io.h>
-
+#include "driver_usart0.h"
+#include <avr/interrupt.h>
+#include <util/delay.h>
 
 int main(void)
 {
-	uart_init();
-	
-    /* Replace with your application code */
-    while (1) 
-    {
-		if(flag_salto_linea)
+	terminal_init();
+	sei();
+	while(1){
+		while (1) 
 		{
-			flag_salto_linea := 0;
-			terminal_task();
+			terminal_dispatch();
+			
 		}
-    }
+	}
 }
 
