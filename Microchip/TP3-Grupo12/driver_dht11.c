@@ -20,10 +20,10 @@
 #define DHT_SET_INPUT()     (DHT_DDR &= ~(1 << DHT_BIT))
 #define DHT_LOW()           (DHT_PORT &= ~(1 << DHT_BIT))
 #define DHT_HIGH()          (DHT_PORT |=  (1 << DHT_BIT))
-#define DHT_READ()          (DHT_PINR &   (1 << DHT_BIT))
+#define DHT_READ()          (DHT_PINR &   (1 << DHT_BIT)) 
 
 /*===== [Definitions of private global variables] ===============*/
-static uint8_t dht_raw[5];
+static uint8_t dht_raw[5]; //40bit de respuesta del sensor
 
 /*===== [Prototypes (declarations) of private functions] =======*/
 
@@ -32,7 +32,7 @@ dht11_status_t dht11_read(dht11_data_t *data)
 {
 	dht11_status_t status;
 
-	status = dht_check_presence();
+	status = dht_check_presence();	//Veerificamos el estado del sensor
 	if (status != DHT11_OK)
 	return status;
 
@@ -68,11 +68,11 @@ static inline void timer0_stop(void)
 
 static dht11_status_t dht_wait_level(uint8_t level, uint16_t timeout_us)
 {
-	TCNT0 = 0;
+	TCNT0 = 0; //set contador timer0 en 0
 
 	while (((DHT_READ() != 0) != level)) {
 		if (TCNT0 >= timeout_us) {
-			return DHT11_ERR_TIMEOUT;
+			return DHT11_ERR_TIMEOUT; //Si el timer se pasa del límite de timeout, el sensor no respondió
 		}
 	}
 
@@ -82,12 +82,12 @@ static dht11_status_t dht_wait_level(uint8_t level, uint16_t timeout_us)
 static dht11_status_t dht_check_presence(void)
 {
 	/* START */
-	DHT_SET_OUTPUT();
+	DHT_SET_OUTPUT();	//Enviamos 18ms de low 
 	DHT_LOW();
 	_delay_ms(DHT_START_MS);
-	DHT_HIGH();
+	DHT_HIGH();			//Luego 30us de high para que sensor responda
 	_delay_us(30);
-	DHT_SET_INPUT();
+	DHT_SET_INPUT();	//Volvemos a setear pin como input
 
 	timer0_start();
 
