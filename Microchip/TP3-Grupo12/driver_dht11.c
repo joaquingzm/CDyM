@@ -41,7 +41,7 @@ dht11_status_t dht11_read(dht11_data_t *data)
 	if (status != DHT11_OK)
 	return status;
 
-	/* checksum */
+	/* checksum */ //Verifica que la suma de los datos enviados mod 256 sea igual al que tiene el sensor
 	if ((uint8_t)(dht_raw[0] + dht_raw[1] + dht_raw[2] + dht_raw[3]) != dht_raw[4])
 	return DHT11_ERR_CHECKSUM;
 
