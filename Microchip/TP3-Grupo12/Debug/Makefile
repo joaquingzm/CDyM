@@ -42,7 +42,8 @@ C_SRCS +=  \
 ../driver_usart0.c \
 ../driver_dht11.c \
 ../driver_twi_rtc.c \
-../main.c
+../main.c \
+../timer.c
 
 
 PREPROCESSING_SRCS += 
@@ -57,7 +58,8 @@ scheduler.o \
 driver_usart0.o \
 driver_dht11.o \
 driver_twi_rtc.o \
-main.o
+main.o \
+timer.o
 
 OBJS_AS_ARGS +=  \
 terminal.o \
@@ -65,7 +67,8 @@ scheduler.o \
 driver_usart0.o \
 driver_dht11.o \
 driver_twi_rtc.o \
-main.o
+main.o \
+timer.o
 
 C_DEPS +=  \
 terminal.d \
@@ -73,7 +76,8 @@ scheduler.d \
 driver_usart0.d \
 driver_dht11.d \
 driver_twi_rtc.d \
-main.d
+main.d \
+timer.d
 
 C_DEPS_AS_ARGS +=  \
 terminal.d \
@@ -81,7 +85,8 @@ scheduler.d \
 driver_usart0.d \
 driver_dht11.d \
 driver_twi_rtc.d \
-main.d
+main.d \
+timer.d
 
 OUTPUT_FILE_PATH +=TP3-Grupo12.elf
 
@@ -133,6 +138,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./main.o: .././main.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./timer.o: .././timer.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.7.374\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
