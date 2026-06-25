@@ -10,13 +10,13 @@
 
 int main(void)
 {
-	terminal_init(F_CPU);
+	terminal_init(F_CPU,"H");
 	timer_init();
 	sei();
 	
-	char comando[64];
-	char msg[20] = "SEGUNDOS: 0";
-	char c = '0';
+	//char comando[64];
+	char msg[64] = " ";
+	//char c = '0';
 	while(1)
 	{
 		terminal_dispatch();
@@ -28,8 +28,7 @@ int main(void)
 			// TELEMETRIA
 			
 			// ------ ARMO MSG -------
-			c++;
-			msg[strlen(msg)-1] = c;
+			
 			// ------ FIN ARMADO MSG -----
 			
 			// ------ MENSAJE ------
@@ -39,7 +38,7 @@ int main(void)
 		
 		if(terminal_line_available())
 		{
-			if(terminal_get_line(comando,sizeof(comando)))
+			if(terminal_get_line(msg,sizeof(msg)))
 			{
 				// algo con comandos
 			}

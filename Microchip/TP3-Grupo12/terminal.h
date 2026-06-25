@@ -19,7 +19,7 @@
 /**
  * @brief   -
  */
-void terminal_init(uint32_t f_cpu);
+void terminal_init(uint32_t f_cpu, char *initial_msg);
 
 /**
  * @brief   -
