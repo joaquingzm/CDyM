@@ -13,8 +13,9 @@
 #include "driver_usart0.h"
 
 /*====[Definitions of private global variables]==================*/
-#define TX_SIZE 512
-#define RX_ASSEMBLY_SIZE 128
+#define RX_ASSEMBLY_SIZE 32
+#define MSG_SIZE 32
+#define TX_SIZE ((RX_ASSEMBLY_SIZE + MSG_SIZE) * 2)
 #define PROMPT "CMD> "
 #define PROMPT_LEN 5
 
@@ -36,7 +37,8 @@ static bool rx_line_ready = false;
 static bool TERM_RX_LINE_OVF = false;  
 
 // Buffer
-static char message[64];
+static char message[MSG_SIZE];
+//static uint8_t last_msg_len = 0;
 
 /*====[Prototypes (declarations) of private functions]===========*/
 static void terminal_process_char(char c);
@@ -54,10 +56,10 @@ static bool rx_assembly_pop(char *c);
 static bool rx_assembly_is_empty(void); 
 
 /*====[Implemenations of public functions]=======================*/
-void terminal_init(uint32_t f_cpu)
+void terminal_init(uint32_t f_cpu,char *initial_msg)
 {
 	usart0_init(9600,f_cpu);
-	terminal_show_msg(" ");
+	terminal_show_msg(initial_msg);
 }
 
 void terminal_dispatch(void)
@@ -95,10 +97,11 @@ void terminal_dispatch(void)
 
 uint8_t terminal_show_msg(char *msg)
 {
+	terminal_clear_all();  
+	
 	strncpy(message, msg, sizeof(message));
 	message[sizeof(message) - 1] = '\0';
 
-	terminal_clear_all();   // borra con el largo viejo
 	terminal_redraw();
 	
 	return 1;
@@ -148,7 +151,7 @@ static void terminal_process_char(char c)
 			
 			if(!rx_line_ready)
 			{
-				memcpy(rx_line_buf, rx_assembly, rx_assembly_top);
+				strcpy(rx_line_buf, rx_assembly);
 				rx_line_ready = true;
 			}
 			else
@@ -175,9 +178,9 @@ static void terminal_process_char(char c)
 		default:
 			if(rx_assembly_top < RX_ASSEMBLY_SIZE - 1)
 			{
-				if(rx_assembly_push(c))
+				if(usart0_write((uint8_t)c))
 				{
-					usart0_write((uint8_t)c); 
+					rx_assembly_push(c);
 				}
 			}
 			else
@@ -192,7 +195,7 @@ static void terminal_clear_all(void)
 {
 	uint8_t total = strlen(message) + PROMPT_LEN + rx_assembly_top;
 	for(uint8_t i = 0; i < total+1; i++)
-	tx_enqueue('\b');
+		tx_enqueue('\b');
 	tx_pending = true;
 }
 
@@ -202,7 +205,7 @@ static void terminal_redraw(void)
 	tx_enqueue('\r');
 	terminal_send(PROMPT);
 	for(uint8_t i = 0; i < rx_assembly_top; i++)
-	tx_enqueue(rx_assembly[i]);
+		tx_enqueue(rx_assembly[i]);
 	tx_pending = true;
 }
 
