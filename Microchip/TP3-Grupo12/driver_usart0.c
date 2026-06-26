@@ -12,20 +12,18 @@
 #include <stdbool.h>
 
 /*====[Definitions of private global variables]==================*/
-#define RX_SIZE 128
-#define TX_SIZE 128
+// Note: In this buffer implementation, one slot is always left 
+// empty to simplify the managment functions and operational logic
+#define RX_SIZE 8
+#define TX_SIZE 8
 
 static volatile uint8_t rx_buffer[RX_SIZE];
 static volatile uint8_t rx_tail;
 static volatile uint8_t rx_head;
-static volatile bool RX_OVF_FLAG;
-static volatile bool RX_FLAG;
 
 static volatile uint8_t tx_buffer[TX_SIZE];
 static volatile uint8_t tx_tail;
 static volatile uint8_t tx_head;
-static volatile bool TX_OVF_FLAG;
-static volatile bool TX_FLAG;
 
 /*====[Prototypes (declarations) of private functions]===========*/
 static bool rx_enqueue(uint8_t c);
