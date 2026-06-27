@@ -23,4 +23,6 @@ typedef struct {
 
 dht11_status_t dht11_read(dht11_data_t *data);
 
+char *dht11_ToString(dht11_data_t data);
+
 #endif /* DRIVER_DHT11_H */

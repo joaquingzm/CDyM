@@ -12,10 +12,6 @@
 #define DHT_PINR        PINC
 #define DHT_BIT         PORTC0
 
-#define DHT_START_MS    18
-#define DHT_WAIT_US     200//140
-#define DHT_BIT_DELAY   30
-
 /*===== [Private function-like macros] ==========================*/
 #define DHT_SET_OUTPUT()    (DHT_DDR |=  (1 << DHT_BIT))
 #define DHT_SET_INPUT() (DHT_DDR &= ~(1 << DHT_BIT))
@@ -66,6 +62,29 @@ dht11_status_t dht11_read(dht11_data_t *data)
 	return DHT11_OK;
 }
 
+char *dht11_ToString(dht11_data_t data)
+{
+	static char msg[16]; // "T=00.0|H=00.0\0"
+
+	char t1 = (data.temperature_int / 10) + '0';
+	char t2 = (data.temperature_int % 10) + '0';
+	char h1 = (data.humidity_int    / 10) + '0';
+	char h2 = (data.humidity_int    % 10) + '0';
+
+	msg[0]  = 'T';
+	msg[1]  = '=';
+	msg[2]  = t1;
+	msg[3]  = t2;
+	msg[4]  = '|';
+	msg[5]  = 'H';
+	msg[6]  = '=';
+	msg[7]  = h1;
+	msg[8]  = h2;
+	msg[9]  = '\0';   // terminador para que strcpy sepa donde parar
+
+	return msg;
+}
+
 /*===== [Implementations of private functions] ==================*/
 static inline void timer1_start(void)
 {
@@ -84,14 +103,14 @@ static dht11_status_t dht_wait_level(uint8_t level, uint16_t timeout_ticks)
 {
 	timer1_start();
 	if (level) {
-		while (!(PINC & (1 << PORTC0))) {
+		while (!DHT_READ()) {
 			if (TCNT1 >= timeout_ticks){ 
 				timer1_stop(); 
 				return DHT11_ERR_TIMEOUT;
 			};
 		}
 		} else {
-		while (PINC & (1 << PORTC0)) {
+		while (DHT_READ()) {
 			if (TCNT1 >= timeout_ticks){
 				timer1_stop();
 				return DHT11_ERR_TIMEOUT;
@@ -107,13 +126,13 @@ static dht11_status_t dht_check_presence(void)
 	//START
 	DHT_SET_OUTPUT();	//Enviamos 18ms de low 
 	DHT_LOW();
-	_delay_ms(DHT_START_MS);
+	_delay_ms(18);
 	DHT_SET_INPUT();	//Volvemos a setear pin como input
 	_delay_us(30);
 
 	 //Sensor response 
 	if (dht_wait_level(0, 60) != DHT11_OK) {
-		return DHT11_ERR_CHECKSUM;
+		return DHT11_ERR_NO_RESPONSE;
 	}
 
 	if (dht_wait_level(1, 160) != DHT11_OK) {
@@ -131,26 +150,24 @@ static dht11_status_t dht_read_raw(void)
 {
 	uint8_t i, j;
 	uint8_t aux=0;
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {	//Inicializo en 0 los 5 bytes
 		dht_raw[i] = 0;
 	}
-
-	for (i = 0; i < 5; i++) {
-		for (j = 0; j < 8; j++) {
-
-			// esperar inicio del bit (HIGH) 
+	for (i = 0; i < 5; i++) {	//Para cada uno de los 5 bytes
+		for (j = 0; j < 8; j++) {	//Recorro bit a bit
 			
-			
+			// esperar inicio del bit (HIGH) 			
 			if (dht_wait_level(1, 160) != DHT11_OK){
 				aux= TCNT1;
 				return DHT11_ERR_TIMEOUT;
 			}
+			
 			// esperar fin del HIGH 
 			if (dht_wait_level(0, 240) != DHT11_OK) return DHT11_ERR_TIMEOUT;
-
+			
 			uint8_t pulse_width = aux+TCNT1;
-
-			if (pulse_width > 70) {   // ~70 µs ? bit 1
+			
+			if (pulse_width > 70) {   // si el pulso dura 70us pongo un bit en 1
 				dht_raw[i] |= (1 << (7 - j));
 			}
 		}
