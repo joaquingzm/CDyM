@@ -16,6 +16,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/*====[Definitions of public data types]=========================*/
+volatile uint8_t RX_FLAG;
+volatile uint8_t TX_FLAG;
+volatile uint8_t RX_OVF_FLAG;
+volatile uint8_t TX_OVF_FLAG;
+
 /*====[Prototypes (declarations) of public functions]============*/
 
 /**

@@ -24,7 +24,7 @@ static char tx_buffer[TX_SIZE];
 static uint8_t tx_head = 0;
 static uint8_t tx_tail = 0;
 static bool tx_pending = false;
-static bool TX_OVF_FLAG = false;
+static bool TERM_TX_OVF_FLAG = false;
 
 // LIFO 
 static char rx_assembly[RX_ASSEMBLY_SIZE]; 
@@ -38,7 +38,6 @@ static bool TERM_RX_LINE_OVF = false;
 
 // Buffer
 static char message[MSG_SIZE];
-//static uint8_t last_msg_len = 0;
 
 /*====[Prototypes (declarations) of private functions]===========*/
 static void terminal_process_char(char c);
@@ -64,17 +63,15 @@ void terminal_init(uint32_t f_cpu,char *initial_msg)
 
 void terminal_dispatch(void)
 {
-	if(usart0_rx_event())
-	{
-		uint8_t c;
+	if(RX_FLAG)
 		while(usart0_rx_available())
 		{
+			uint8_t c;
 			if(usart0_read(&c))
 			{ 
-				terminal_process_char((char)c);  // el echo lo decide process_char
+				terminal_process_char((char)c);  // echo decided by process_char
 			}
-		}
-	}	
+		}	
 	
 	if(tx_pending)
 	{
@@ -168,9 +165,9 @@ static void terminal_process_char(char c)
 		case '\b':
 			if(!rx_assembly_is_empty())
 			{
-				if(rx_assembly_pop(&aux))
+				if(usart0_write('\b')) // echo
 				{
-					usart0_write('\b');  
+					rx_assembly_pop(&aux);
 				}
 			}
 			break;
@@ -178,10 +175,8 @@ static void terminal_process_char(char c)
 		default:
 			if(rx_assembly_top < RX_ASSEMBLY_SIZE - 1)
 			{
-				if(usart0_write((uint8_t)c))
-				{
-					rx_assembly_push(c);
-				}
+				usart0_write((uint8_t)c); // echo best effort
+				rx_assembly_push(c);
 			}
 			else
 			{
@@ -202,7 +197,7 @@ static void terminal_clear_all(void)
 static void terminal_redraw(void)
 {
 	terminal_send(message);
-	tx_enqueue('\r');
+	terminal_send("\r");
 	terminal_send(PROMPT);
 	for(uint8_t i = 0; i < rx_assembly_top; i++)
 		tx_enqueue(rx_assembly[i]);
@@ -233,7 +228,7 @@ static bool tx_enqueue(char c)
 	
 	if(next_tx_head == tx_tail)
 	{
-		TX_OVF_FLAG = true;
+		TERM_TX_OVF_FLAG = true;
 		return false;
 	}
 	tx_buffer[tx_head] = c;

@@ -11,6 +11,7 @@
 #define _TIMER_
 
 #include <stdint.h>
+
 /*====[Definitions of public data types]=========================*/
 volatile uint8_t FLAG_TIMER;
 
