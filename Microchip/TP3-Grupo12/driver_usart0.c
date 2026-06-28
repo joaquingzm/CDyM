@@ -27,8 +27,8 @@
 #include <stdint.h>
 
 /*====[Definitions of private global variables]==================*/
-#define RX_SIZE 32
-#define TX_SIZE 32
+#define RX_SIZE 16
+#define TX_SIZE 128
 
 /* Reception buffer: Filled by ISR, consumed by usart0_read() */
 static volatile uint8_t rx_buffer[RX_SIZE];

@@ -1,7 +1,6 @@
 /**
  * @file monitor.c
- * @brief Monitor de invernadero.
- *        Posee y conduce: terminal, timer, driver_rtc, driver_dht11.
+ * @brief -
  */
 
 /*====[Inclusion of own header]==================================*/
@@ -21,30 +20,26 @@
 #define REPORT_INTERVAL_DEFAULT   5
 #define REPORT_INTERVAL_MIN       2
 #define REPORT_INTERVAL_MAX      60
-#define ALERT_PERIOD_FRAMES       2   // trama de alerta cada N tramas de telemetría
+#define ALERT_PERIOD_FRAMES       2  
 
-// Ventana horaria
 #define DAY_HOUR_START    7
 #define DAY_HOUR_END     18
 
-// Rangos día (07:00–18:59)
 #define DAY_TEMP_MIN     20
 #define DAY_TEMP_MAX     30
 #define DAY_HUM_MIN      50
 #define DAY_HUM_MAX      70
 
-// Rangos noche (19:00–06:59)
 #define NIGHT_TEMP_MIN   15
 #define NIGHT_TEMP_MAX   22
 #define NIGHT_HUM_MIN    60
 #define NIGHT_HUM_MAX    80
 
-// Debe coincidir con MSG_SIZE de terminal.c
-#define DISPLAY_MSG_SIZE 32
+#define DISPLAY_MSG_SIZE 85
 
 /*====[Private state]============================================*/
-static uint8_t report_interval     = REPORT_INTERVAL_DEFAULT;
-static uint8_t report_counter      = 0;
+static uint8_t report_interval = REPORT_INTERVAL_DEFAULT;
+static uint8_t report_counter = 0;
 static uint8_t alert_frame_counter = 0;
 static char    display_msg[DISPLAY_MSG_SIZE];
 
@@ -139,30 +134,39 @@ static void monitor_report(void)
 	else if(!rtc_ok)
 	{
 		snprintf(display_msg, sizeof(display_msg),
-		"%s | T:%dC H:%d%%", rtc_status_str(rtc_status),
+		"%s | T:%dC H:%d%% | Estado: -", rtc_status_str(rtc_status),
 		d.temperature_int, d.humidity_int);
 	}
 	else if(!dht_ok)
 	{
 		snprintf(display_msg, sizeof(display_msg),
-		"[%02d:%02d:%02d] %s",
+		"[%02d:%02d:%02d] | %s | Estado: -",
 		t.hour, t.min, t.sec, dht11_status_str(dht_status));
 	}
 	else if(alert && (alert_frame_counter == ALERT_PERIOD_FRAMES - 1))
 	{
-		if(!temp_ok)
-		snprintf(display_msg, sizeof(display_msg),
-		"[ALERTA] %02d:%02d Temp! %dC",
-		t.hour, t.min, d.temperature_int);
+		if(!temp_ok && !hum_ok)
+		{
+			snprintf(display_msg, sizeof(display_msg),
+			"[ALERTA] [%02d:%02d:%02d] Temperatura y humedad fuera de rango %s! Valores: %dC %d%%",
+			t.hour, t.min, t.sec, day? "diurno":"nocturno", d.temperature_int, d.humidity_int);
+		}
 		else
-		snprintf(display_msg, sizeof(display_msg),
-		"[ALERTA] %02d:%02d Hum! %d%%",
-		t.hour, t.min, d.humidity_int);
+		{
+			if(!temp_ok)
+			snprintf(display_msg, sizeof(display_msg),
+			"[ALERTA] [%02d:%02d:%02d] Temperatura fuera de rango %s! Valor: %dC",
+			t.hour, t.min, t.sec, day? "diurno":"nocturno", d.temperature_int);
+			else
+			snprintf(display_msg, sizeof(display_msg),
+			"[ALERTA] [%02d:%02d:%02d] Humedad fuera de rango %s! Valor: %d%%",
+			t.hour, t.min, t.sec, day? "diurno":"nocturno", d.humidity_int);
+		}
 	}
 	else
 	{
 		snprintf(display_msg, sizeof(display_msg),
-		"[%02d:%02d:%02d]T:%dC H:%d%% %s",
+		"[%02d:%02d:%02d] | T:%dC | H:%d%% | Estado: %s",
 		t.hour, t.min, t.sec,
 		d.temperature_int, d.humidity_int,
 		alert ? "ALERTA" : "NORMAL");
@@ -248,7 +252,7 @@ static void monitor_parse_command(const char *cmd)
         }
 
         report_interval = val;
-        report_counter  = 0;  // próximo reporte en exactamente val segundos
+        report_counter  = 0; 
         snprintf(resp, sizeof(resp), "Intervalo:%ds", val);
         terminal_show_msg(resp);
     }

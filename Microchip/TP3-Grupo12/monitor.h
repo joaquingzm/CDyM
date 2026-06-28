@@ -1,11 +1,17 @@
-/*
- * monitor.h
- *
- * Created: 6/26/2026 2:19:19
- *  Author: joaqu
- */ 
+/**
+ * @file    monitor.h
+ * @brief   -
+ */
+
+
 #define F_CPU 16000000UL
 
+/**
+ * @brief   -
+ */
 void monitor_init(void);
 
+/**
+ * @brief   -
+ */
 void monitor_dispatch(void);

@@ -13,8 +13,8 @@
 #include "driver_usart0.h"
 
 /*====[Definitions of private global variables]==================*/
-#define RX_ASSEMBLY_SIZE 32
-#define MSG_SIZE 32
+#define RX_ASSEMBLY_SIZE 20
+#define MSG_SIZE 100
 #define TX_SIZE ((RX_ASSEMBLY_SIZE + MSG_SIZE) * 2)
 #define PROMPT "CMD> "
 #define PROMPT_LEN 5
@@ -144,7 +144,7 @@ static void terminal_process_char(char c)
 		case '\r':
 			if(rx_assembly_is_empty()) break;
 			
-			if(!rx_assembly_push('\0')) break;
+			rx_assembly[rx_assembly_top] = '\0';
 			
 			if(!rx_line_ready)
 			{
@@ -165,18 +165,18 @@ static void terminal_process_char(char c)
 		case '\b':
 			if(!rx_assembly_is_empty())
 			{
-				if(usart0_write('\b')) // echo
-				{
-					rx_assembly_pop(&aux);
-				}
+				rx_assembly_pop(&aux);
+				tx_enqueue('\b');      
+				tx_pending = true;
 			}
 			break;
 		
 		default:
 			if(rx_assembly_top < RX_ASSEMBLY_SIZE - 1)
 			{
-				usart0_write((uint8_t)c); // echo best effort
 				rx_assembly_push(c);
+				tx_enqueue(c);        
+				tx_pending = true;
 			}
 			else
 			{
