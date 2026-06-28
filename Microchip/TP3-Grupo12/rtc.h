@@ -16,21 +16,20 @@
 #define RTC_REG_HOUR   0x02
 
 typedef struct {
-    uint8_t horas;
-    uint8_t minutos;
-    uint8_t segundos;
+	uint8_t hour;   /* 0–23 */
+	uint8_t min;    /* 0–59 */
+	uint8_t sec;    /* 0–59 */
 } rtc_time_t;
 
 typedef enum {
-    RTC_IDLE,
-    RTC_BUSY_READING,
-    RTC_BUSY_WRITING
+    RTC_OK,
+    RTC_ERROR,
 } rtc_state_t;
 
 /**
  * @brief   -
  */
-bool rtc_get_time(rtc_time_t *time);
+rtc_state_t rtc_get_time(rtc_time_t *time);
 
 /**
  * @brief   -

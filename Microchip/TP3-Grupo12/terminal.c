@@ -63,15 +63,15 @@ void terminal_init(uint32_t f_cpu,char *initial_msg)
 
 void terminal_dispatch(void)
 {
-	if(RX_FLAG)
-		while(usart0_rx_available())
-		{
-			uint8_t c;
-			if(usart0_read(&c))
-			{ 
-				terminal_process_char((char)c);  // echo decided by process_char
-			}
-		}	
+	
+	while(usart0_rx_available())
+	{
+		uint8_t c;
+		if(usart0_read(&c))
+		{ 
+			terminal_process_char((char)c);  // echo decided by process_char
+		}
+	}	
 	
 	if(tx_pending)
 	{

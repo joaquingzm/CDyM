@@ -155,7 +155,7 @@ static bool rx_enqueue(uint8_t c)
 	uint8_t next_rx_head = (rx_head + 1) % RX_SIZE;
 	if(next_rx_head == rx_tail)
 	{
-		RX_OVF_FLAG = true;
+		rx_ovf_flag = true;
 		return false;
 	}
 	rx_buffer[rx_head] = c;

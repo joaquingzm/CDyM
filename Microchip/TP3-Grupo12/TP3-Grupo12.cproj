@@ -108,6 +108,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="driver_dht11.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="driver_twi.h">
       <SubType>compile</SubType>
     </Compile>

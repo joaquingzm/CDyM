@@ -10,17 +10,12 @@
 /*====[Inclusion of private function dependencies]===============*/
 #include "terminal.h"
 #include "timer.h"
-//#include "driver_rtc.h"
+#include "rtc.h"
 #include "driver_dht11.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-typedef enum {//ESTO HAY QUE SACARLO
-	RTC_OK = 0,
-	RTC_ERR
-} rtc_status_t;
 
 /*====[Definitions]==============================================*/
 #define REPORT_INTERVAL_DEFAULT   5
@@ -53,16 +48,6 @@ static uint8_t report_counter      = 0;
 static uint8_t alert_frame_counter = 0;
 static char    display_msg[DISPLAY_MSG_SIZE];
 
-typedef struct
-{
-	uint8_t hour;   /* 0–23 */
-	uint8_t min;    /* 0–59 */
-	uint8_t sec;    /* 0–59 */
-} rtc_time_t;
-bool rtc_set_time(rtc_time_t * t){//ESTO HAY QUE SACARLO
-	return false;
-}
-
 /*====[Private prototypes]=======================================*/
 static void monitor_report(void);
 static void monitor_parse_command(const char *cmd);
@@ -75,8 +60,6 @@ void monitor_init(void)
 {
     terminal_init(F_CPU, "Iniciando monitor...");
     timer_init();
-    //rtc_init();
-    //dht11_init();
 
     report_interval     = REPORT_INTERVAL_DEFAULT;
     report_counter      = 0;
@@ -122,13 +105,13 @@ static const char *dht11_status_str(dht11_status_t status)
 	}
 }
 
-static const char *rtc_status_str(rtc_status_t status)
+static const char *rtc_status_str(rtc_state_t status)
 {
 	switch(status)
 	{
-		case RTC_OK:  return "OK";
-		case RTC_ERR: return "Error RTC";
-		default:      return "Error desc.";
+		case RTC_OK: return "OK";
+		case RTC_ERROR: return "Error RTC";
+		default: return "Error desc.";
 	}
 }
 
@@ -137,7 +120,7 @@ static void monitor_report(void)
 	rtc_time_t     t;
 	dht11_data_t   d;
 
-	rtc_status_t   rtc_status = RTC_ERR; /* rtc_get_time(&t); */
+	rtc_state_t   rtc_status = rtc_get_time(&t);
 	bool rtc_ok = (rtc_status == RTC_OK);
 
 	dht11_status_t dht_status = dht11_read(&d);

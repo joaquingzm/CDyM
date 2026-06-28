@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /*====[Definitions of private constants]=========================*/
 #define TWI_ST_START        0x08
