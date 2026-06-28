@@ -108,10 +108,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="driver_twi.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="monitor.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="monitor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rtc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rtc.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="terminal.c">
@@ -120,16 +129,13 @@
     <Compile Include="driver_usart0.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="scheduler.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="driver_usart0.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="driver_dht11.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="driver_twi_rtc.c">
+    <Compile Include="driver_twi.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
