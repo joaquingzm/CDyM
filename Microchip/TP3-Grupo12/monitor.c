@@ -10,12 +10,17 @@
 /*====[Inclusion of private function dependencies]===============*/
 #include "terminal.h"
 #include "timer.h"
-#include "driver_rtc.h"
+//#include "driver_rtc.h"
 #include "driver_dht11.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+typedef enum {//ESTO HAY QUE SACARLO
+	RTC_OK = 0,
+	RTC_ERR
+} rtc_status_t;
 
 /*====[Definitions]==============================================*/
 #define REPORT_INTERVAL_DEFAULT   5
@@ -48,6 +53,16 @@ static uint8_t report_counter      = 0;
 static uint8_t alert_frame_counter = 0;
 static char    display_msg[DISPLAY_MSG_SIZE];
 
+typedef struct
+{
+	uint8_t hour;   /* 0–23 */
+	uint8_t min;    /* 0–59 */
+	uint8_t sec;    /* 0–59 */
+} rtc_time_t;
+bool rtc_set_time(rtc_time_t * t){//ESTO HAY QUE SACARLO
+	return false;
+}
+
 /*====[Private prototypes]=======================================*/
 static void monitor_report(void);
 static void monitor_parse_command(const char *cmd);
@@ -60,8 +75,8 @@ void monitor_init(void)
 {
     terminal_init(F_CPU, "Iniciando monitor...");
     timer_init();
-    rtc_init();
-    dht11_init();
+    //rtc_init();
+    //dht11_init();
 
     report_interval     = REPORT_INTERVAL_DEFAULT;
     report_counter      = 0;
@@ -95,62 +110,89 @@ void monitor_dispatch(void)
 }
 
 /*====[Private functions]========================================*/
+static const char *dht11_status_str(dht11_status_t status)
+{
+	switch(status)
+	{
+		case DHT11_OK:              return "OK";
+		case DHT11_ERR_NO_RESPONSE: return "Sin sensor";
+		case DHT11_ERR_TIMEOUT:     return "Timeout";
+		case DHT11_ERR_CHECKSUM:    return "Error checksum";
+		default:                    return "Error desc.";
+	}
+}
+
+static const char *rtc_status_str(rtc_status_t status)
+{
+	switch(status)
+	{
+		case RTC_OK:  return "OK";
+		case RTC_ERR: return "Error RTC";
+		default:      return "Error desc.";
+	}
+}
+
 static void monitor_report(void)
 {
-    rtc_time_t   t;
-    dht11_data_t d;
+	rtc_time_t     t;
+	dht11_data_t   d;
 
-    bool rtc_ok = rtc_get_time(&t);
-    bool dht_ok = dht11_read(&d);
+	rtc_status_t   rtc_status = RTC_ERR; /* rtc_get_time(&t); */
+	bool rtc_ok = (rtc_status == RTC_OK);
 
-    bool day     = rtc_ok ? is_daytime(&t) : true;
-    bool temp_ok = (rtc_ok && dht_ok) ? check_temp_ok(d.temp, day) : true;
-    bool hum_ok  = (rtc_ok && dht_ok) ? check_hum_ok(d.hum,  day) : true;
-    bool alert   = !temp_ok || !hum_ok;
+	dht11_status_t dht_status = dht11_read(&d);
+	bool dht_ok = (dht_status == DHT11_OK);
 
-    if(!rtc_ok && !dht_ok)
-    {
-        strncpy(display_msg, "Sin RTC | Sin sensor", sizeof(display_msg) - 1);
-    }
-    else if(!rtc_ok)
-    {
-        snprintf(display_msg, sizeof(display_msg),
-                 "Sin RTC | T:%dC H:%d%%", d.temp, d.hum);
-    }
-    else if(!dht_ok)
-    {
-        snprintf(display_msg, sizeof(display_msg),
-                 "[%02d:%02d:%02d] Sin sensor",
-                 t.hour, t.min, t.sec);
-    }
-    else if(alert && (alert_frame_counter == ALERT_PERIOD_FRAMES - 1))
-    {
-        if(!temp_ok)
-            snprintf(display_msg, sizeof(display_msg),
-                     "[ALERTA] %02d:%02d Temp! %dC",
-                     t.hour, t.min, d.temp);
-        else
-            snprintf(display_msg, sizeof(display_msg),
-                     "[ALERTA] %02d:%02d Hum! %d%%",
-                     t.hour, t.min, d.hum);
-    }
-    else
-    {
-        snprintf(display_msg, sizeof(display_msg),
-                 "[%02d:%02d:%02d]T:%dC H:%d%% %s",
-                 t.hour, t.min, t.sec,
-                 d.temp, d.hum,
-                 alert ? "ALERTA" : "NORMAL");
-    }
+	bool day     = rtc_ok ? is_daytime(&t) : true;
+	bool temp_ok = (rtc_ok && dht_ok) ? check_temp_ok(d.temperature_int, day) : true;
+	bool hum_ok  = (rtc_ok && dht_ok) ? check_hum_ok(d.humidity_int,  day) : true;
+	bool alert   = !temp_ok || !hum_ok;
 
-    display_msg[sizeof(display_msg) - 1] = '\0';
+	if(!rtc_ok && !dht_ok)
+	{
+		snprintf(display_msg, sizeof(display_msg),
+		"%s | %s", rtc_status_str(rtc_status), dht11_status_str(dht_status));
+	}
+	else if(!rtc_ok)
+	{
+		snprintf(display_msg, sizeof(display_msg),
+		"%s | T:%dC H:%d%%", rtc_status_str(rtc_status),
+		d.temperature_int, d.humidity_int);
+	}
+	else if(!dht_ok)
+	{
+		snprintf(display_msg, sizeof(display_msg),
+		"[%02d:%02d:%02d] %s",
+		t.hour, t.min, t.sec, dht11_status_str(dht_status));
+	}
+	else if(alert && (alert_frame_counter == ALERT_PERIOD_FRAMES - 1))
+	{
+		if(!temp_ok)
+		snprintf(display_msg, sizeof(display_msg),
+		"[ALERTA] %02d:%02d Temp! %dC",
+		t.hour, t.min, d.temperature_int);
+		else
+		snprintf(display_msg, sizeof(display_msg),
+		"[ALERTA] %02d:%02d Hum! %d%%",
+		t.hour, t.min, d.humidity_int);
+	}
+	else
+	{
+		snprintf(display_msg, sizeof(display_msg),
+		"[%02d:%02d:%02d]T:%dC H:%d%% %s",
+		t.hour, t.min, t.sec,
+		d.temperature_int, d.humidity_int,
+		alert ? "ALERTA" : "NORMAL");
+	}
 
-    if(alert)
-        alert_frame_counter = (alert_frame_counter + 1) % ALERT_PERIOD_FRAMES;
-    else
-        alert_frame_counter = 0;
+	display_msg[sizeof(display_msg) - 1] = '\0';
 
-    terminal_show_msg(display_msg);
+	if(alert)
+	alert_frame_counter = (alert_frame_counter + 1) % ALERT_PERIOD_FRAMES;
+	else
+	alert_frame_counter = 0;
+
+	terminal_show_msg(display_msg);
 }
 
 static void monitor_parse_command(const char *cmd)
