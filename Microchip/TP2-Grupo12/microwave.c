@@ -88,7 +88,6 @@ static void microwave_state_idle(void)
 		alarm_flag = 0u;
 		cooking_time_s = 0u;
 		cooking_time_m = 0u;
-		
 	}
 
 	if (key >= '0' && key <= '9')

@@ -1,6 +1,6 @@
 /**
  * @file led.c
- * @brief Implementación de leds.
+ * @brief Implementación de driver de LEDs indicadores del sistema.
  */
 /*====[Inclusion of own header]==================================*/
 #include "led.h"

@@ -1,17 +1,22 @@
 /**
  * @file    lede.h
- * @brief   Driver LED.
+ * @brief   Driver de LEDs indicadores del sistema.
  *
  * @details
  * Provee funciones para inicializar y controlar
- * 
+ * los LEDs utilizados por el controlador del
+ * horno microondas.
  *
- * 
- * 
- * 
- * 
- * 
+ * LEDs utilizados:
+ *  - LED Magnetrón:
+ *      Indica proceso de cocción activo.
  *
+ *  - LED Luz interior:
+ *      Indica funcionamiento interno del horno.
+ *
+ *  - LED Alarma:
+ *      Indica finalización del proceso mediante
+ *      parpadeo.
  */
 
 /*====[Avoid multiple inclusion - begin]=========================*/

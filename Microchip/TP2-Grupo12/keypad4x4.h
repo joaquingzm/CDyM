@@ -2,13 +2,12 @@
  * @file    keypad4x4.h
  * @brief   Driver keypad4x4.
  *
+ * @brief   Driver del teclado matricial 4x4.
+ *
  * @details
  * Provee funciones para inicializar y controlar
- * 
- *
- * El módulo permite:
- *
- *
+ * el teclado matricial 4x4 utilizado como interfaz
+ * de entrada del usuario.
  */
 /*=====[Avoid multiple inclusion - begin]===========================*/
 #ifndef _KEYPAD_H_
