@@ -2,11 +2,16 @@
  * ldr.c
  */ 
 
+/*====[Inclusion of own header]==================================*/
 #include "ldr.h"
+
+/*====[Inclusion of private function dependencies]===============*/
 #include <avr/io.h>
 
+/*====[Definitions of private global variables]==================*/
 #define VREF 5
 
+/*====[Implemenations of public functions]=======================*/
 void ldr_init()
 {
 	// Elijo como referencia Avcc (5V), dejo Right Adjust Result, elijo PC3 como entrada

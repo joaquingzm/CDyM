@@ -2,9 +2,13 @@
  * timer1_pwm.c
  */ 
 
+/*====[Inclusion of own header]==================================*/
 #include "timer1_pwm.h"
+
+/*====[Inclusion of private function dependencies]===============*/
 #include <avr/io.h>
 
+/*====[Implemenations of public functions]=======================*/
 void timer1_init()
 {
 	// -- Configuro Compare Output mode, Fast PWM --

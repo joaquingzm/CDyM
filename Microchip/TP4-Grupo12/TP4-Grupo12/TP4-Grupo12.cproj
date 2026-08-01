@@ -108,6 +108,36 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="driver_usart0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="driver_usart0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ldr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ldr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sistema.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sistema.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="terminal.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="terminal.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer2.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="timer1_pwm.c">
       <SubType>compile</SubType>
     </Compile>
