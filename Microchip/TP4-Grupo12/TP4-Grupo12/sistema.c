@@ -81,7 +81,7 @@ void sistema_dispatch(void)
 		{
 			count = 0;
 			uint16_t ldr = ldr_read();
-			periodo_ldr = ((uint32_t)ldr*3000)/1023 + 3000;
+			periodo_ldr = 6000 - (((uint32_t)ldr*6000)/1023);
 		}
 	}
 }
