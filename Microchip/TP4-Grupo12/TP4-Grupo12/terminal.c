@@ -165,8 +165,8 @@ static void terminal_process_char(char c)
 			if(!rx_assembly_is_empty())
 			{
 				rx_assembly_pop(&aux);
-				tx_enqueue('\b');      // ECHO
-				tx_pending = true;     // ECHO
+				//tx_enqueue('\b');      // ECHO
+				//tx_pending = true;     // ECHO
 			}
 			break;
 		case '\n':
@@ -176,8 +176,8 @@ static void terminal_process_char(char c)
 			if(rx_assembly_top < RX_ASSEMBLY_SIZE - 1)
 			{
 				rx_assembly_push(c);
-				tx_enqueue(c);      // ECHO   
-				tx_pending = true;  // ECHO
+				//tx_enqueue(c);      // ECHO   
+				//tx_pending = true;  // ECHO
 			}
 			else
 			{

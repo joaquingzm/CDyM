@@ -20,8 +20,6 @@
 static uint8_t red_val;
 static uint8_t green_val;
 static uint8_t blue_val;
-// Como el contador es de 10ms, la variable está en ms con resolución 10ms
-// Para facilitar las cuentas [periodo_ldr] = ms/10
 static uint16_t periodo_ldr;
 
 typedef enum {
@@ -36,14 +34,14 @@ static void actualizar_efecto(uint32_t ms_actuales);
 static void process_command(const char *cmd);
 
 /*====[Implementations of public functions]======================*/
-void sistema_init(void)
+void sistema_init()
 {
 	// Iniciar terminal
-	terminal_init(F_CPU, "Iniciando monitor...");
+	terminal_init(F_CPU, "");
 	
 	// Iniciar ledRGB
 	ledRGB_init();
-	ledRGB_set(0,0,0);
+	ledRGB_set(0,255,0);
 	
 	// Iniciar ldr
 	ldr_init();
@@ -81,7 +79,7 @@ void sistema_dispatch(void)
 		{
 			count = 0;
 			uint16_t ldr = ldr_read();
-			periodo_ldr = 6000 - (((uint32_t)ldr*6000)/1023);
+			periodo_ldr = 6000 - (((uint32_t)ldr*3000)/1023);
 		}
 	}
 }
@@ -124,7 +122,7 @@ static void process_command(const char *cmd)
         p = parse_byte(p, &r);
         if(p == NULL || *p != ',')
         {
-            terminal_show_msg("Formato:R,G,B");
+           // terminal_show_msg("Formato:R,G,B");
             return;
         }
         p++;
@@ -132,7 +130,7 @@ static void process_command(const char *cmd)
         p = parse_byte(p, &g);
         if(p == NULL || *p != ',')
         {
-            terminal_show_msg("Formato:R,G,B");
+            //terminal_show_msg("Formato:R,G,B");
             return;
         }
         p++;
@@ -140,18 +138,22 @@ static void process_command(const char *cmd)
         p = parse_byte(p, &b);
         if(p == NULL || *p != '\0')
         {
-            terminal_show_msg("Formato:R,G,B");
+            //terminal_show_msg("Formato:R,G,B");
             return;
         }
 
         red_val = r;
 		green_val = g;
 		blue_val = b;
+		
+		//terminal_show_msg("\nCargaste valores");
     }
     else
     {
-        terminal_show_msg("Cmd desconocido");
+        //terminal_show_msg("\nCmd desconocido");
     }
+	
+	
 }
 
 static void actualizar_efecto(uint32_t ms_actuales) 

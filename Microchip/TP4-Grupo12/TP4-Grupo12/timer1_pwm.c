@@ -45,7 +45,7 @@ void timer1_init()
 void timer1_pwm_set_duty_A(uint8_t duty)
 {
 	OCR1A = duty;
-	/*
+	
 	if (duty == 0)
 	{
 		// Desconecto el Timer1 del pin OC1A 
@@ -57,13 +57,13 @@ void timer1_pwm_set_duty_A(uint8_t duty)
 	{
 		// Reconecto el Timer1 al pin OC1A en modo invertido
 		TCCR1A |= (1<<COM1A1) | (1<<COM1A0);
-	}*/
+	}
 }
 
 void timer1_pwm_set_duty_B(uint8_t duty)
 {
 	OCR1B = duty;
-	/*
+	
 	if (duty == 0)
 	{
 		// Desconecto el Timer1 del pin OC1B (Limpia los bits COM)
@@ -75,5 +75,5 @@ void timer1_pwm_set_duty_B(uint8_t duty)
 	{
 		// Reconecto el Timer1 al pin OC1B en modo invertido
 		TCCR1A |= (1<<COM1B1) | (1<<COM1B0);
-	}*/
+	}
 }

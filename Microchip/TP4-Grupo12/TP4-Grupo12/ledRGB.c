@@ -44,6 +44,11 @@ void ledRGB_set(uint8_t r, uint8_t g, uint8_t b)
 ISR(TIMER0_OVF_vect)
 {
 	static uint8_t count = 0;
+	/*
+	Para el caso duty_r=0 se agrega una condición al if
+	para que no ocurran picos cuando count=0. De esta forma
+	se mantiene apagado el led
+	*/
 	if(count <= duty_r && duty_r!=0)
 	{
 		PORTB &= ~(1<<PORTB5);
